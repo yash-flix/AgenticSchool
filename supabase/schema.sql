@@ -1,11 +1,16 @@
 -- Agent School schema
--- Run this once in the Supabase SQL editor, or via `supabase db push`.
+-- Paste into the Supabase SQL editor and press Run.
+--
+-- Safe to run as many times as you like. Every statement is guarded, because
+-- the SQL editor wraps the whole script in one transaction: a single
+-- "already exists" error would otherwise roll back everything above it and
+-- leave you with no tables at all.
 --
 -- Design notes:
---   * Every table is protected by row-level security. Per-user data is scoped
---     by auth.uid() in the database, not in application code.
---   * Projects auto-publish. Moderation is reactive: anyone signed in can file
---     a report, and a project is hidden once it accumulates enough of them.
+--   * Row-level security is on for every table. Per-user data is scoped by
+--     auth.uid() in the database, not in application code.
+--   * Projects auto-publish. Moderation is reactive: any signed-in person can
+--     file one report, and three distinct reports hide a project.
 
 -- ---------------------------------------------------------------- profiles --
 
@@ -20,9 +25,11 @@ create table if not exists public.profiles (
 
 alter table public.profiles enable row level security;
 
+drop policy if exists "profiles are readable by everyone" on public.profiles;
 create policy "profiles are readable by everyone"
   on public.profiles for select using (true);
 
+drop policy if exists "a user may update their own profile" on public.profiles;
 create policy "a user may update their own profile"
   on public.profiles for update using (auth.uid() = id);
 
@@ -69,18 +76,28 @@ create table if not exists public.course_progress (
 
 alter table public.course_progress enable row level security;
 
+drop policy if exists "a user reads only their own progress" on public.course_progress;
 create policy "a user reads only their own progress"
   on public.course_progress for select using (auth.uid() = user_id);
 
+drop policy if exists "a user writes only their own progress" on public.course_progress;
 create policy "a user writes only their own progress"
   on public.course_progress for insert with check (auth.uid() = user_id);
 
+drop policy if exists "a user deletes only their own progress" on public.course_progress;
 create policy "a user deletes only their own progress"
   on public.course_progress for delete using (auth.uid() = user_id);
 
 -- ---------------------------------------------------------------- projects --
 
-create type project_status as enum ('published', 'hidden');
+-- `create type` has no IF NOT EXISTS, so guard it by hand.
+do $$
+begin
+  create type public.project_status as enum ('published', 'hidden');
+exception
+  when duplicate_object then null;
+end
+$$;
 
 create table if not exists public.projects (
   id           uuid primary key default gen_random_uuid(),
@@ -92,7 +109,7 @@ create table if not exists public.projects (
   demo_url     text,
   stack        text[] not null default '{}',
   stage        text not null,
-  status       project_status not null default 'published',
+  status       public.project_status not null default 'published',
   report_count int not null default 0,
   created_at   timestamptz not null default now()
 );
@@ -102,16 +119,20 @@ create index if not exists projects_created_idx
 
 alter table public.projects enable row level security;
 
+drop policy if exists "published projects are readable by everyone" on public.projects;
 create policy "published projects are readable by everyone"
   on public.projects for select
   using (status = 'published' or auth.uid() = user_id);
 
+drop policy if exists "a signed-in user may post their own project" on public.projects;
 create policy "a signed-in user may post their own project"
   on public.projects for insert with check (auth.uid() = user_id);
 
+drop policy if exists "a user may edit their own project" on public.projects;
 create policy "a user may edit their own project"
   on public.projects for update using (auth.uid() = user_id);
 
+drop policy if exists "a user may delete their own project" on public.projects;
 create policy "a user may delete their own project"
   on public.projects for delete using (auth.uid() = user_id);
 
@@ -127,9 +148,11 @@ create table if not exists public.project_reports (
 
 alter table public.project_reports enable row level security;
 
+drop policy if exists "a signed-in user may file one report per project" on public.project_reports;
 create policy "a signed-in user may file one report per project"
   on public.project_reports for insert with check (auth.uid() = user_id);
 
+drop policy if exists "a user sees their own reports" on public.project_reports;
 create policy "a user sees their own reports"
   on public.project_reports for select using (auth.uid() = user_id);
 
@@ -143,7 +166,8 @@ as $$
 begin
   update public.projects
      set report_count = report_count + 1,
-         status = case when report_count + 1 >= 3 then 'hidden'::project_status
+         status = case when report_count + 1 >= 3
+                       then 'hidden'::public.project_status
                        else status end
    where id = new.project_id;
   return new;
@@ -154,3 +178,17 @@ drop trigger if exists on_project_reported on public.project_reports;
 create trigger on_project_reported
   after insert on public.project_reports
   for each row execute function public.bump_report_count();
+
+-- ------------------------------------------------------------------ finish --
+
+-- PostgREST caches the schema. Without this the API keeps reporting
+-- "Could not find the table 'public.projects' in the schema cache" for a
+-- minute or so after the tables appear.
+notify pgrst, 'reload schema';
+
+-- Visible confirmation. You want four rows back.
+select table_name as created_table
+  from information_schema.tables
+ where table_schema = 'public'
+   and table_name in ('profiles', 'projects', 'course_progress', 'project_reports')
+ order by table_name;

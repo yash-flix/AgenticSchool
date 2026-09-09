@@ -253,9 +253,10 @@ copy_file_clip "supabase/schema.sql" || note "copy supabase/schema.sql by hand"
 open_url "https://supabase.com/dashboard/project/${PROJECT_REF}/sql/new"
 step "Paste into the SQL editor (already on your clipboard)."
 step "Press Run, or Cmd+Enter."
-step "You want 'Success. No rows returned' at the bottom."
-warn "If it says type project_status already exists, you have run it before"
-note "  and everything is fine. Carry on."
+step "You want a result table listing four rows: course_progress, profiles,"
+note "  project_reports, projects. That is the script confirming itself."
+warn "If you get an error instead, nothing was created: the editor runs the"
+note "  whole script in one transaction. Paste the error to Claude."
 pause "Ran it? Enter to continue."
 
 # ── 3 ─────────────────────────────────────────────────────────────────────
