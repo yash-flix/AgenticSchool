@@ -1,13 +1,22 @@
 export const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL ?? "";
-export const SUPABASE_ANON_KEY =
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? "";
 
 /**
- * The whole app degrades gracefully when Supabase is not configured: progress
- * stays in localStorage and the wall uses an in-memory store. This lets the
- * site run from a fresh clone with no credentials.
+ * Supabase is retiring the legacy JWT `anon` key in favour of publishable keys
+ * (`sb_publishable_...`). Accept either so an existing .env keeps working.
  */
-export const supabaseEnabled = Boolean(SUPABASE_URL && SUPABASE_ANON_KEY);
+export const SUPABASE_PUBLISHABLE_KEY =
+  process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ??
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ??
+  "";
+
+export const supabaseEnabled = Boolean(
+  SUPABASE_URL && SUPABASE_PUBLISHABLE_KEY
+);
+
+/** The `abcdefgh` in `https://abcdefgh.supabase.co`. */
+export function projectRef() {
+  return SUPABASE_URL.replace(/^https?:\/\//, "").split(".")[0] ?? "";
+}
 
 export function siteUrl() {
   return (

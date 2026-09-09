@@ -26,21 +26,42 @@ community wall uses an in-memory store, so nothing is lost except persistence.
 
 ## Accounts and persistence
 
-Accounts are optional. Set the keys below and the app switches on GitHub and
+Accounts are optional. Configure Supabase and the app switches on GitHub and
 Google sign-in, cross-device progress sync, and a durable community wall.
 
-1. Create a Supabase project.
-2. Run `supabase/schema.sql` in the SQL editor. It creates the tables,
-   row-level security policies, the new-user trigger, and the report trigger.
-3. In Authentication → Providers, enable GitHub and Google, and add
-   `<your-origin>/auth/callback` as the redirect URL for each.
-4. Copy `.env.example` to `.env.local` and fill in the project URL and anon key.
+```bash
+./scripts/setup-supabase.sh
+```
+
+That wizard opens each dashboard page in turn, tells you exactly what to click,
+writes `.env.local` for you, and finishes by checking every table over
+`/api/health`. It is safe to re-run; it offers your saved values as defaults.
+
+If you would rather do it by hand, the same four steps are:
+
+1. Run `supabase/schema.sql` in the SQL editor. It creates the tables, the
+   row-level security policies, and the two triggers.
+2. Authentication → URL Configuration: set Site URL to your origin, and add
+   `http://localhost:3000/**` to Redirect URLs. The double asterisk matters,
+   because the app returns to `/auth/callback?next=...` with a query string.
+3. Create a GitHub OAuth app and a Google OAuth client. Both take the same
+   authorization callback URL, and it is **Supabase's**, not your app's:
+   `https://<project-ref>.supabase.co/auth/v1/callback`. Paste each client ID
+   and secret into Authentication → Sign In / Providers.
+4. Copy the project URL and publishable key into `.env.local`.
 
 ```
 NEXT_PUBLIC_SUPABASE_URL=
-NEXT_PUBLIC_SUPABASE_ANON_KEY=
+NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=
 NEXT_PUBLIC_SITE_URL=http://localhost:3000
 ```
+
+`GET /api/health` reports whether the keys are picked up and whether every
+table exists, which is the fastest way to find out what is missing.
+
+Legacy `anon` JWT keys still work: the app reads
+`NEXT_PUBLIC_SUPABASE_ANON_KEY` as a fallback. Supabase is retiring them, so
+prefer the publishable key.
 
 ### How progress sync works
 
