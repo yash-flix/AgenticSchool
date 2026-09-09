@@ -1,36 +1,36 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Agent School
 
-## Getting Started
+A curated path through ten free YouTube courses on agentic AI, ordered so each
+one builds on the last. Roughly 65 hours across four stages: Ground,
+Orchestrate, Context, Ship.
 
-First, run the development server:
+Design language is borrowed from cofounder.co: warm off-white canvas, hairline
+rules, mono microlabels, numbered chapter sections, and a UI-mockup panel in the
+hero.
+
+## Run it
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Stack
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- Next.js 16 (App Router, Turbopack) + React 19
+- Tailwind CSS v4, tokens declared in `app/globals.css` under `@theme`
+- Instrument Sans + IBM Plex Mono via `next/font/google`
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Changing the courses
 
-## Learn More
+Everything lives in `lib/courses.ts`. Each entry needs a YouTube `videoId`;
+thumbnails and embeds are derived from it. `stages` controls the four sections
+and the `stage` field on a course assigns it to one.
 
-To learn more about Next.js, take a look at the following resources:
+Course metadata (durations, channels, view counts) was read from YouTube in
+September 2026.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Notes
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- Progress tracking is `localStorage` only, keyed `agent-school.progress.v1`.
+- Course detail pages are statically generated from `generateStaticParams`.
