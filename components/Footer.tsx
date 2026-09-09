@@ -67,6 +67,14 @@ export default function Footer() {
               ))}
               <li>
                 <Link
+                  href="/community"
+                  className="text-[14.5px] text-white/70 transition-colors hover:text-canvas"
+                >
+                  Community wall
+                </Link>
+              </li>
+              <li>
+                <Link
                   href="/#catalog"
                   className="text-[14.5px] text-white/40 transition-colors hover:text-canvas"
                 >

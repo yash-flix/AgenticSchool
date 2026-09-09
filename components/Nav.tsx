@@ -10,6 +10,7 @@ const links = [
   { href: "/#path", label: "The path" },
   { href: "/#catalog", label: "All courses" },
   { href: "/#field", label: "Field track" },
+  { href: "/community", label: "Community" },
   { href: "/#faq", label: "Notes" },
 ];
 
