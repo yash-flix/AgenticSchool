@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Instrument_Serif } from "next/font/google";
+import { Caveat, Geist, Geist_Mono, Instrument_Serif } from "next/font/google";
 import ProgressSync from "@/components/ProgressSync";
 import "./globals.css";
 
@@ -12,6 +12,13 @@ const geist = Geist({
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
+  display: "swap",
+});
+
+const caveat = Caveat({
+  variable: "--font-caveat",
+  subsets: ["latin"],
+  weight: ["400", "500"],
   display: "swap",
 });
 
@@ -41,7 +48,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geist.variable} ${geistMono.variable} ${instrumentSerif.variable}`}
+      className={`${geist.variable} ${geistMono.variable} ${instrumentSerif.variable} ${caveat.variable}`}
     >
       <body className="grain antialiased">
         <ProgressSync />
