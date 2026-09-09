@@ -8,6 +8,7 @@ import { useProgress } from "@/lib/useProgress";
 const links = [
   { href: "/#path", label: "The path" },
   { href: "/#catalog", label: "All courses" },
+  { href: "/#field", label: "Field track" },
   { href: "/#stack", label: "What you build" },
   { href: "/#faq", label: "Notes" },
 ];
@@ -39,6 +40,9 @@ export default function Nav() {
           </span>
           <span className="text-[15px] font-semibold tracking-[-0.02em]">
             Agent School
+          </span>
+          <span className="hidden rounded-full border border-moss/40 bg-moss/8 px-2 py-0.5 font-mono text-[9.5px] tracking-[0.14em] text-moss uppercase sm:block">
+            Free
           </span>
         </Link>
 

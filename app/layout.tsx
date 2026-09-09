@@ -16,13 +16,13 @@ const plexMono = IBM_Plex_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Agent School — 10 courses that take you from prompt to production",
+  title: "Agent School — a free path from prompt to production agents",
   description:
-    "A curated, ordered path through the ten best free YouTube courses on agentic AI. Roughly 65 hours, four stages, one working agent stack at the end.",
+    "A free, curated path through the best YouTube courses on agentic AI, plus a field track of engineers running agents in production. No sign-up, no paywall.",
   openGraph: {
     title: "Agent School",
     description:
-      "Ten free YouTube courses on agentic AI, put in the order you should actually watch them.",
+      "A free curriculum for agentic AI, put in the order you should actually watch it.",
     type: "website",
   },
 };

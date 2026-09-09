@@ -1,4 +1,5 @@
 import Catalog from "@/components/Catalog";
+import FieldTrack from "@/components/FieldTrack";
 import Footer from "@/components/Footer";
 import Hero from "@/components/Hero";
 import Marquee from "@/components/Marquee";
@@ -15,6 +16,7 @@ export default function Home() {
         <Marquee />
         <Stages />
         <Catalog />
+        <FieldTrack />
         <Stack />
       </main>
       <Footer />

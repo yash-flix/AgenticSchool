@@ -35,6 +35,14 @@ const notes = [
     a: "The path is Python-first. Course 10 is the no-code track, and it is deliberately last, because n8n makes far more sense once you know what it is abstracting away.",
   },
   {
+    q: "Is any of it paid?",
+    a: "No. Every course and every field session on this page is free to watch on YouTube, with no sign-up and no affiliate links. The site exists to order the material, not to resell it.",
+  },
+  {
+    q: "What is the field track for?",
+    a: "Watch it alongside the path, not after it. Courses teach you to build an agent. The field track shows principal engineers and founders running agents in real work, which is a different and equally useful thing.",
+  },
+  {
     q: "How current is this?",
     a: "Durations, channels, and view counts were read from YouTube in September 2026. Frameworks move fast, so treat the orchestration courses as teaching patterns rather than exact APIs.",
   },

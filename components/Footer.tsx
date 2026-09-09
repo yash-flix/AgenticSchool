@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { courses, totalMinutes } from "@/lib/courses";
+import { courses, libraryCount, libraryMinutes } from "@/lib/courses";
 
 export default function Footer() {
   return (
@@ -16,16 +16,17 @@ export default function Footer() {
               </span>
             </div>
             <p className="mt-4 max-w-[40ch] text-[14px] leading-[1.55] text-ink-2">
-              A reading order for {courses.length} free YouTube courses on
-              agentic AI, {Math.round(totalMinutes / 60)} hours in total. Not
-              affiliated with any of the creators listed.
+              A free, unpaywalled reading order for {libraryCount} YouTube
+              videos on agentic AI, {Math.round(libraryMinutes / 60)} hours in
+              total. Not affiliated with any of the creators listed, and
+              nothing here is sold.
             </p>
           </div>
 
           <div className="md:col-span-3">
             <span className="label">Stages</span>
             <ul className="mt-4 space-y-2">
-              {["ground", "orchestrate", "context", "ship"].map((s) => (
+              {["ground", "orchestrate", "context", "ship", "field"].map((s) => (
                 <li key={s}>
                   <a
                     href={`#${s}`}

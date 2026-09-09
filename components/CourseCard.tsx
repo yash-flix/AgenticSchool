@@ -36,7 +36,7 @@ export default function CourseCard({
       <div
         className={
           variant === "path"
-            ? "grid gap-0 sm:grid-cols-[236px_1fr]"
+            ? "grid gap-0 sm:grid-cols-[300px_1fr]"
             : "flex flex-col"
         }
       >
@@ -52,7 +52,7 @@ export default function CourseCard({
             src={thumb(course.videoId)}
             alt=""
             fill
-            sizes="(max-width: 640px) 100vw, 320px"
+            sizes="(max-width: 640px) 100vw, 380px"
             className="object-cover transition-transform duration-500 group-hover:scale-[1.04]"
           />
           <span className="absolute top-2 left-2 rounded-md bg-canvas/92 px-2 py-1 font-mono text-[10px] tracking-widest text-ink backdrop-blur">
@@ -69,7 +69,12 @@ export default function CourseCard({
             <span className={`label ${levelTone[course.level]}`}>
               {course.level}
             </span>
-            <span className="label ml-auto">{fmtViews(course.views)} views</span>
+            <span className="ml-auto flex items-center gap-2.5">
+              <span className="label">{fmtViews(course.views)} views</span>
+              <span className="rounded-full border border-moss/40 bg-moss/8 px-2 py-0.5 font-mono text-[9.5px] tracking-[0.14em] text-moss uppercase">
+                Free
+              </span>
+            </span>
           </div>
 
           <Link href={`/course/${course.slug}`} className="mt-3 block">

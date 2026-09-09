@@ -29,7 +29,7 @@ export const stages: Stage[] = [
     id: "ground",
     index: "1.0",
     name: "Ground",
-    headline: "Learn what an agent actually is\nbefore you wire one up",
+    headline: "Learn what an agent actually is before you wire one up",
     blurb:
       "Models, tools, loops, and state. These three courses give you the vocabulary and the first working agent, without hiding anything behind a framework.",
   },
@@ -37,7 +37,7 @@ export const stages: Stage[] = [
     id: "orchestrate",
     index: "2.0",
     name: "Orchestrate",
-    headline: "Move from one agent\nto a team that coordinates",
+    headline: "Move from one agent to a team that coordinates",
     blurb:
       "Graphs, roles, handoffs, and control flow. Learn the three orchestration models that every production agent stack is built on top of.",
   },
@@ -45,7 +45,7 @@ export const stages: Stage[] = [
     id: "context",
     index: "3.0",
     name: "Context",
-    headline: "Give your agents\nsomething real to work with",
+    headline: "Give your agents something real to work with",
     blurb:
       "An agent is only as good as what it can read and reach. Retrieval, vector stores, memory, and the protocol that plugs agents into your tools.",
   },
@@ -53,7 +53,7 @@ export const stages: Stage[] = [
     id: "ship",
     index: "4.0",
     name: "Ship",
-    headline: "Build the projects\nthat prove you can do this",
+    headline: "Build the projects that prove you can do this",
     blurb:
       "End with two long build-alongs. One writes real Python, one ships client-ready automations. Both leave you with something to show.",
   },
@@ -319,3 +319,167 @@ export function watchUrl(videoId: string) {
 export const allTopics = Array.from(
   new Set(courses.flatMap((c) => c.topics))
 ).sort();
+
+/* ------------------------------------------------------------------ */
+/* Field track — from the "Build with Ai" playlist                     */
+/* ------------------------------------------------------------------ */
+
+export type FieldVideo = {
+  videoId: string;
+  title: string;
+  channel: string;
+  minutes: number;
+  tag: string;
+};
+
+export const playlistUrl =
+  "https://www.youtube.com/playlist?list=PLchXxfd_3auQ";
+
+export const playlistName = "Build with Ai";
+
+/**
+ * Long-form talks and walkthroughs on how working engineers use agents day to
+ * day. Different from the course path: less curriculum, more shoulder-surfing.
+ */
+export const fieldTrack: FieldVideo[] = [
+  {
+    videoId: "14RP8liACqo",
+    title:
+      "How Senior Engineers Actually Build With AI in 2026 | Full Stack Systems Architecture App",
+    channel: "JavaScript Mastery",
+    minutes: 238,
+    tag: "Build-along",
+  },
+  {
+    videoId: "UPtmKh1vMN8",
+    title: "Claude Code Advanced Full Course (3 Hours)",
+    channel: "Nick Saraev",
+    minutes: 198,
+    tag: "Tooling",
+  },
+  {
+    videoId: "TAKDIvvUdc4",
+    title: "Complete Claude Code Course In 2 Hours For Developers",
+    channel: "Krish Naik",
+    minutes: 119,
+    tag: "Tooling",
+  },
+  {
+    videoId: "58n-n-3oRic",
+    title:
+      "Andrew Ng's graph engineering course: 1 prompt → 100 agents → loops → graphs",
+    channel: "Function Form",
+    minutes: 110,
+    tag: "Orchestration",
+  },
+  {
+    videoId: "K-mA3MZ_EzU",
+    title: "Watch me build a brand-new project from scratch",
+    channel: "Matt Pocock",
+    minutes: 108,
+    tag: "Build-along",
+  },
+  {
+    videoId: "uqX2hY7CseU",
+    title:
+      "How Senior Engineers Actually Build with AI in 2026 | Splitwise AI Clone",
+    channel: "Ankita Kulkarni",
+    minutes: 101,
+    tag: "Build-along",
+  },
+  {
+    videoId: "kPN564Kol14",
+    title: "L8 Principal Building a Full Stack App with Agentic Engineering",
+    channel: "Kun Chen",
+    minutes: 100,
+    tag: "Workflow",
+  },
+  {
+    videoId: "-QFHIoCo-Ko",
+    title: "Full Walkthrough: Workflow for AI Coding",
+    channel: "AI Engineer · Matt Pocock",
+    minutes: 97,
+    tag: "Workflow",
+  },
+  {
+    videoId: "Ak_edo5Z9YM",
+    title: "Build This Project to Get Hired in 2026",
+    channel: "Harkirat Singh",
+    minutes: 60,
+    tag: "Build-along",
+  },
+  {
+    videoId: "88B6DimMD2g",
+    title: "How This Ex-Meta L8 Engineer Ships 40 PRs a Day with AI Agents",
+    channel: "Peter Yang",
+    minutes: 56,
+    tag: "Workflow",
+  },
+  {
+    videoId: "Ukju3maxbEQ",
+    title: "A Meta Engineer's Agentic Engineering Workflow",
+    channel: "Jason Ku",
+    minutes: 52,
+    tag: "Workflow",
+  },
+  {
+    videoId: "QBfXiWvM0qc",
+    title: "A $75M founder reveals his agentic engineering setup",
+    channel: "David Ondrej",
+    minutes: 52,
+    tag: "Workflow",
+  },
+  {
+    videoId: "iQyg-KypKAA",
+    title: "L8 Principal's Agentic Engineering Workflow",
+    channel: "Kun Chen",
+    minutes: 46,
+    tag: "Workflow",
+  },
+  {
+    videoId: "5N-okeDdIuI",
+    title: "L8 Principal's Agentic Dev Environment From Scratch",
+    channel: "Kun Chen",
+    minutes: 45,
+    tag: "Setup",
+  },
+  {
+    videoId: "0oXOOlqVu5M",
+    title: "So I tried Matt's skills...",
+    channel: "Theo · t3.gg",
+    minutes: 38,
+    tag: "Review",
+  },
+  {
+    videoId: "S-sYlFiGFv8",
+    title: "How the Claude Code team uses Claude Code",
+    channel: "Claude",
+    minutes: 22,
+    tag: "Workflow",
+  },
+  {
+    videoId: "17-YSUHo6Lk",
+    title: "Agentic SDLC at Uber",
+    channel: "AI Engineer",
+    minutes: 18,
+    tag: "In production",
+  },
+  {
+    videoId: "xLQgOzK1adE",
+    title: "My current agentic coding workflow",
+    channel: "Web Dev Cody",
+    minutes: 14,
+    tag: "Workflow",
+  },
+  {
+    videoId: "PXzHKuBuyJU",
+    title: "How to Write a CLAUDE.md That Actually Works",
+    channel: "ByteMonk",
+    minutes: 7,
+    tag: "Setup",
+  },
+];
+
+export const fieldMinutes = fieldTrack.reduce((a, v) => a + v.minutes, 0);
+export const libraryMinutes = totalMinutes + fieldMinutes;
+export const libraryCount = courses.length + fieldTrack.length;

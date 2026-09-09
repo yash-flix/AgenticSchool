@@ -1,6 +1,9 @@
 import {
   courses,
+  fieldTrack,
   fmtViews,
+  libraryCount,
+  libraryMinutes,
   stages,
   totalMinutes,
   totalViews,
@@ -18,15 +21,22 @@ const board = [
 
 export default function Hero() {
   const hours = Math.round(totalMinutes / 60);
+  const libraryHours = Math.round(libraryMinutes / 60);
 
   return (
     <section className="relative overflow-hidden px-6 pt-16 pb-10 md:pt-24">
       <div className="mx-auto max-w-[1180px]">
         <Reveal>
-          <div className="flex items-center gap-2">
-            <span className="h-1.5 w-1.5 rounded-full bg-flame live-dot" />
-            <span className="label">
-              {courses.length} courses · {hours} hours · all free
+          <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
+            <span className="rounded-full border border-moss/40 bg-moss/8 px-2.5 py-1 font-mono text-[10px] tracking-[0.14em] text-moss uppercase">
+              Free resource
+            </span>
+            <span className="flex items-center gap-2">
+              <span className="h-1.5 w-1.5 rounded-full bg-flame live-dot" />
+              <span className="label">
+                {courses.length} courses · {fieldTrack.length} field sessions ·{" "}
+                {libraryHours} hours
+              </span>
             </span>
           </div>
         </Reveal>
@@ -40,9 +50,14 @@ export default function Hero() {
         <div className="mt-7 grid gap-8 border-t border-line pt-7 md:grid-cols-12">
           <Reveal delay={120} className="md:col-span-7">
             <p className="max-w-[52ch] text-[17px] leading-[1.55] text-ink-2 md:text-[19px]">
-              Ten YouTube courses, put in the order you should actually watch
-              them. You start by building an agent loop by hand and finish with
-              a multi-agent system that retrieves, remembers, and ships.
+              A free curriculum built out of {libraryCount} YouTube videos, put
+              in the order you should actually watch them. You start by building
+              an agent loop by hand and finish with a multi-agent system that
+              retrieves, remembers, and ships.
+            </p>
+            <p className="mt-3 max-w-[52ch] text-[15px] leading-[1.55] text-muted">
+              No sign-up, no paywall, no affiliate links. Every video plays on
+              the creator&rsquo;s own channel.
             </p>
             <div className="mt-7 flex flex-wrap items-center gap-3">
               <a
@@ -61,15 +76,20 @@ export default function Hero() {
           </Reveal>
 
           <Reveal delay={180} className="md:col-span-5">
-            <dl className="grid grid-cols-3 gap-px overflow-hidden rounded-xl border border-line bg-line">
+            <dl className="grid grid-cols-2 gap-px overflow-hidden rounded-xl border border-line bg-line">
               {[
-                { k: "Runtime", v: `${hours}h` },
+                { k: "Core path", v: `${hours}h` },
                 { k: "Stages", v: String(stages.length) },
                 { k: "Views", v: fmtViews(totalViews) },
+                { k: "Cost", v: "$0", tone: "text-moss" },
               ].map((s) => (
                 <div key={s.k} className="bg-canvas px-4 py-5">
                   <dt className="label">{s.k}</dt>
-                  <dd className="mt-2 text-[26px] leading-none font-semibold tracking-[-0.03em]">
+                  <dd
+                    className={`mt-2 text-[26px] leading-none font-semibold tracking-[-0.03em] ${
+                      s.tone ?? ""
+                    }`}
+                  >
                     {s.v}
                   </dd>
                 </div>
