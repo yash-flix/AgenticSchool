@@ -87,7 +87,7 @@ export default function PathFlow() {
             </marker>
           </defs>
           <path
-            d="M14 78 C 27 78, 28 55, 40 51 C 52 47, 56 25, 70 21 C 80 18, 86 12, 93 5"
+            d="M12 72 C 24 72, 26 50, 38 45 C 50 40, 56 22, 68 17 C 78 13, 84 9, 91 3"
             fill="none"
             stroke="var(--color-line-2)"
             strokeWidth="0.4"
@@ -99,13 +99,13 @@ export default function PathFlow() {
         {steps.map((s, i) => (
           <div
             key={s.n}
-            className="absolute w-[190px]"
+            className="absolute w-[172px]"
             style={{
-              left: [`2%`, `36%`, `68%`][i],
-              top: [`58%`, `31%`, `4%`][i],
+              left: ["0%", "34%", "64%"][i],
+              top: ["58%", "31%", "4%"][i],
             }}
           >
-            <span className="ghost-num block text-[13px] tracking-[0.18em] text-muted">
+            <span className="block font-mono text-[12px] tracking-[0.18em] text-muted tabular-nums">
               {s.n}
             </span>
             <span className="mt-3 block">
@@ -118,7 +118,7 @@ export default function PathFlow() {
           </div>
         ))}
 
-        <figcaption className="hand absolute right-[1%] bottom-[2%] w-[190px] text-right text-[19px] leading-[1.35] text-ink-2">
+        <figcaption className="hand absolute right-0 bottom-[1%] w-[180px] text-right text-[19px] leading-[1.35] text-ink-2">
           A clear path from concepts to real agents.
           <svg
             viewBox="0 0 120 12"

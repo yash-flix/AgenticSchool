@@ -7,6 +7,7 @@ import {
   totalMinutes,
   totalViews,
 } from "@/lib/courses";
+import PathFlow from "./PathFlow";
 import Reveal from "./Reveal";
 
 const board = [
@@ -40,59 +41,81 @@ export default function Hero() {
   ];
 
   return (
-    <section className="relative overflow-hidden px-6 pt-14 pb-12 md:pt-20">
+    <section className="relative overflow-hidden px-6 pt-12 pb-14 md:pt-16">
       <div
         aria-hidden
-        className="dot-grid pointer-events-none absolute inset-x-0 top-0 h-[520px] opacity-70 [mask-image:radial-gradient(ellipse_70%_60%_at_50%_0%,black,transparent)]"
+        className="dot-grid pointer-events-none absolute inset-x-0 top-0 h-[620px] opacity-60 [mask-image:radial-gradient(ellipse_75%_65%_at_50%_0%,black,transparent)]"
       />
 
       <div className="relative mx-auto max-w-[1200px]">
-        <Reveal>
-          <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
-            <span className="chip chip-free">Free resource</span>
-            <span className="flex items-center gap-2">
-              <span className="h-1.5 w-1.5 rounded-full bg-flame live-dot" />
-              <span className="label">
-                {courses.length} courses · {fieldTrack.length} field sessions ·{" "}
-                {libraryHours} hours
-              </span>
-            </span>
-          </div>
-        </Reveal>
-
-        <Reveal delay={60}>
-          <h1 className="display-1 mt-7 max-w-[13ch]">
-            Go god level in <span className="em-serif">agentic AI</span>
-          </h1>
-        </Reveal>
-
-        <div className="mt-12 grid gap-x-12 gap-y-10 border-t border-line pt-9 md:grid-cols-12">
-          <Reveal delay={120} className="md:col-span-5">
-            <p className="lede max-w-[46ch]">
-              A free curriculum assembled from YouTube and put in the order you
-              should actually watch it. Start by writing an agent loop by hand.
-              Finish with a multi-agent system that retrieves, remembers, and
-              ships.
-            </p>
-            <div className="mt-8 flex flex-wrap items-center gap-3">
-              <a href="#path" className="btn btn-solid">
-                Start with course 01
-                <span aria-hidden className="text-[13px] opacity-60">
-                  →
+        <div className="grid items-center gap-x-12 gap-y-14 lg:grid-cols-12">
+          <div className="lg:col-span-6">
+            <Reveal>
+              <p className="label flex flex-wrap items-center gap-2.5">
+                YouTube
+                <span aria-hidden className="text-line-2">
+                  &rarr;
                 </span>
-              </a>
-              <a href="#catalog" className="btn btn-ghost">
-                Browse everything
-              </a>
-            </div>
-            <p className="mt-5 text-[13.5px] leading-relaxed text-muted">
-              No sign-up, no paywall, no affiliate links. Every video plays on
-              the creator&rsquo;s own channel.
-            </p>
-          </Reveal>
+                Structured
+                <span aria-hidden className="text-line-2">
+                  &rarr;
+                </span>
+                Real skills
+              </p>
+            </Reveal>
 
-          <Reveal delay={180} className="md:col-span-6 md:col-start-7">
-            <dl className="grid grid-cols-2 gap-x-8 gap-y-7 sm:grid-cols-4 md:gap-x-6">
+            <Reveal delay={60}>
+              <h1 className="display-1 mt-7">
+                Go god level in <span className="em-serif">agentic AI</span>
+              </h1>
+            </Reveal>
+
+            <Reveal delay={120}>
+              <p className="lede mt-8 max-w-[44ch]">
+                A free curriculum assembled from YouTube and put in the order
+                you should actually watch it. Start by writing an agent loop by
+                hand. Finish with a multi-agent system that retrieves,
+                remembers, and ships.
+              </p>
+
+              <div className="mt-9 flex flex-wrap items-center gap-3">
+                <a href="#path" className="btn btn-solid">
+                  Start with course 01
+                  <span aria-hidden className="text-[13px] opacity-60">
+                    &rarr;
+                  </span>
+                </a>
+                <a href="#catalog" className="btn btn-ghost">
+                  Browse everything
+                </a>
+              </div>
+
+              <p className="mt-8 flex items-start gap-3 text-[13.5px] leading-[1.5] text-muted">
+                <span
+                  aria-hidden
+                  className="mt-0.5 grid h-[22px] w-[31px] shrink-0 place-items-center rounded-[7px] bg-ink"
+                >
+                  <svg viewBox="0 0 12 14" className="h-2.5 w-2.5 fill-canvas">
+                    <path d="M0 0l12 7-12 7z" />
+                  </svg>
+                </span>
+                <span>
+                  No sign-up, no paywall, no affiliate links.
+                  <br />
+                  Every video plays on the creator&rsquo;s own channel.
+                </span>
+              </p>
+            </Reveal>
+          </div>
+
+          <Reveal delay={180} className="lg:col-span-6">
+            <PathFlow />
+          </Reveal>
+        </div>
+
+        <div className="mt-20 border-t border-line pt-10">
+          <Reveal>
+            <dl className="grid grid-cols-2 gap-x-8 gap-y-8 sm:grid-cols-4">
               {stats.map((s) => (
                 <div key={s.k} className="border-t border-ink pt-3.5">
                   <dt className="label">{s.k}</dt>
@@ -107,9 +130,10 @@ export default function Hero() {
                 </div>
               ))}
             </dl>
-            <p className="mt-8 max-w-[44ch] text-[13.5px] leading-relaxed text-muted">
+            <p className="mt-8 text-[13.5px] leading-relaxed text-muted">
               <span className="text-ink">{fmtViews(totalViews)} views</span> on
-              the ten core courses. Nothing here is gated, sponsored, or resold.
+              the ten core courses. Nothing here is gated, sponsored, or
+              resold.
             </p>
           </Reveal>
         </div>

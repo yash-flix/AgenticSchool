@@ -9,9 +9,6 @@ export default function AuthButton() {
   const [open, setOpen] = useState(false);
   const [busy, setBusy] = useState<string | null>(null);
 
-  // Without credentials there is nothing to sign in to; the community page
-  // explains the local-only mode instead of putting a dead button in the nav.
-  if (!enabled) return null;
 
   if (viewer) {
     return (
@@ -65,7 +62,7 @@ export default function AuthButton() {
         <div className="card absolute right-0 z-20 mt-2 w-56 p-2 hover:translate-y-0">
           <button
             onClick={() => signIn("github")}
-            disabled={busy !== null}
+            disabled={busy !== null || !enabled}
             className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left text-[14px] transition-colors hover:bg-panel disabled:opacity-50"
           >
             <svg viewBox="0 0 16 16" className="h-4 w-4 fill-ink" aria-hidden>
@@ -75,7 +72,7 @@ export default function AuthButton() {
           </button>
           <button
             onClick={() => signIn("google")}
-            disabled={busy !== null}
+            disabled={busy !== null || !enabled}
             className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left text-[14px] transition-colors hover:bg-panel disabled:opacity-50"
           >
             <svg viewBox="0 0 18 18" className="h-4 w-4" aria-hidden>
@@ -86,9 +83,16 @@ export default function AuthButton() {
             </svg>
             {busy === "google" ? "Opening Google…" : "Continue with Google"}
           </button>
-          <p className="mt-1 px-3 py-2 text-[11.5px] leading-relaxed text-muted">
-            Signing in syncs your progress across devices and lets you post to
-            the wall.
+          <p className="mt-1 border-t border-line px-3 py-2.5 text-[11.5px] leading-relaxed text-muted">
+            {enabled ? (
+              "Signing in syncs your progress across devices and lets you post to the wall."
+            ) : (
+              <>
+                Accounts are not switched on yet. Add the Supabase keys from{" "}
+                <code className="font-mono text-[10.5px]">.env.example</code> to
+                enable sign-in.
+              </>
+            )}
           </p>
         </div>
       )}
