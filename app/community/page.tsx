@@ -10,7 +10,8 @@ import {
   referenceRepo,
   referenceTotal,
 } from "@/lib/community";
-import { projectStore } from "@/lib/projectStore";
+import { listProjects } from "@/lib/projectStore";
+import { supabaseEnabled } from "@/lib/supabase/config";
 
 export const metadata: Metadata = {
   title: "Community — Agent School",
@@ -21,7 +22,7 @@ export const metadata: Metadata = {
 export const dynamic = "force-dynamic";
 
 export default async function CommunityPage() {
-  const projects = await projectStore.list();
+  const projects = await listProjects();
 
   return (
     <>
@@ -215,7 +216,7 @@ export default async function CommunityPage() {
           className="scroll-mt-24 border-t border-line px-6 py-20 md:py-28"
         >
           <div className="mx-auto max-w-[1200px]">
-            <CommunityWall initialProjects={projects} persisted={false} />
+            <CommunityWall initialProjects={projects} persisted={supabaseEnabled} />
           </div>
         </section>
       </main>

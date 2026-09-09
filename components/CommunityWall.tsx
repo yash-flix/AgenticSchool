@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import { useViewer } from "@/lib/useViewer";
+import AuthButton from "./AuthButton";
 import {
   projectStages,
   stackOptions,
@@ -26,7 +28,11 @@ export default function CommunityWall({
   initialProjects: CommunityProject[];
   persisted: boolean;
 }) {
+  const { viewer, enabled } = useViewer();
+  const needsAuth = enabled && !viewer;
+
   const [projects, setProjects] = useState<CommunityProject[]>(initialProjects);
+  const [reported, setReported] = useState<string[]>([]);
   const [open, setOpen] = useState(false);
   const [form, setForm] = useState<NewProject>(empty);
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -42,6 +48,15 @@ export default function CommunityWall({
         ? f.stack.filter((x) => x !== s)
         : [...f.stack, s],
     }));
+
+  async function report(id: string) {
+    setReported((r) => [...r, id]);
+    try {
+      await fetch(`/api/projects/${id}/report`, { method: "POST" });
+    } catch {
+      // Nothing useful to tell the reporter; the button already changed state.
+    }
+  }
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
@@ -80,13 +95,22 @@ export default function CommunityWall({
             Built something? <span className="em-serif">Put it up.</span>
           </h2>
         </div>
-        <button
-          onClick={() => setOpen((v) => !v)}
-          className="btn btn-solid"
-          aria-expanded={open}
-        >
-          {open ? "Close form" : "Submit a project"}
-        </button>
+        {needsAuth ? (
+          <AuthButton />
+        ) : (
+          <button
+            onClick={() => {
+              setOpen((v) => !v);
+              if (viewer && !form.author) {
+                set("author", viewer.handle ? `@${viewer.handle}` : viewer.name);
+              }
+            }}
+            className="btn btn-solid"
+            aria-expanded={open}
+          >
+            {open ? "Close form" : "Submit a project"}
+          </button>
+        )}
       </div>
 
       <p className="lede mt-6 max-w-[58ch]">
@@ -98,11 +122,19 @@ export default function CommunityWall({
       {!persisted && (
         <p className="mt-6 flex items-start gap-3 rounded-xl border border-amber/35 bg-amber/8 p-4 text-[13.5px] leading-relaxed text-ink-2">
           <span className="mt-0.5 font-mono text-[10px] tracking-[0.15em] text-amber uppercase">
-            Note
+            Local
           </span>
-          Submissions are not stored yet. The form, validation, and API route are
-          live, but they write to memory until a database is chosen, so anything
-          posted here disappears when the server restarts.
+          Supabase credentials are not set, so the wall is running against an
+          in-memory store. Submissions work end to end but vanish on restart.
+          Add the keys from <code className="font-mono">.env.example</code> to
+          switch it on.
+        </p>
+      )}
+
+      {needsAuth && (
+        <p className="mt-6 rounded-xl border border-line bg-panel/70 p-4 text-[13.5px] leading-relaxed text-ink-2">
+          Sign in with GitHub or Google to post. It also syncs your course
+          progress across devices.
         </p>
       )}
 
@@ -203,7 +235,7 @@ export default function CommunityWall({
               {sending ? "Posting…" : "Post to the wall"}
             </button>
             <span className="text-[13px] text-muted">
-              No account needed while the wall is anonymous.
+              Goes live immediately. Anyone can report it if it does not belong.
             </span>
           </div>
         </form>
@@ -262,6 +294,13 @@ export default function CommunityWall({
                       Demo ↗
                     </a>
                   )}
+                  <button
+                    onClick={() => report(p.id)}
+                    disabled={reported.includes(p.id)}
+                    className="ml-auto font-mono text-[9.5px] tracking-[0.14em] text-muted uppercase transition-colors hover:text-flame disabled:text-moss"
+                  >
+                    {reported.includes(p.id) ? "Reported" : "Report"}
+                  </button>
                 </div>
               </li>
             ))}

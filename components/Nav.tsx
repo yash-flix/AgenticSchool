@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { courses } from "@/lib/courses";
 import { useProgress } from "@/lib/useProgress";
+import AuthButton from "./AuthButton";
 import Logo from "./Logo";
 
 const links = [
@@ -56,6 +57,7 @@ export default function Nav() {
           <span className="label hidden lg:block">
             {ready ? `${done.length}/${courses.length}` : ""}
           </span>
+          <AuthButton />
           <a href="#path" className="btn btn-solid btn-sm">
             Start the path
           </a>

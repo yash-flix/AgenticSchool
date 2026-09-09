@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Instrument_Serif } from "next/font/google";
+import ProgressSync from "@/components/ProgressSync";
 import "./globals.css";
 
 const geist = Geist({
@@ -42,7 +43,10 @@ export default function RootLayout({
       lang="en"
       className={`${geist.variable} ${geistMono.variable} ${instrumentSerif.variable}`}
     >
-      <body className="grain antialiased">{children}</body>
+      <body className="grain antialiased">
+        <ProgressSync />
+        {children}
+      </body>
     </html>
   );
 }
