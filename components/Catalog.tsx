@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { allTopics, courses, fmtDuration, type Course } from "@/lib/courses";
+import AccentText from "./AccentText";
 import CourseCard from "./CourseCard";
 
 type Sort = "path" | "shortest" | "popular";
@@ -25,16 +26,16 @@ export default function Catalog() {
   const mins = list.reduce((a, c) => a + c.minutes, 0);
 
   return (
-    <section id="catalog" className="scroll-mt-20 border-t border-line px-6 py-20 md:py-28">
-      <div className="mx-auto max-w-[1180px]">
+    <section id="catalog" className="scroll-mt-24 border-t border-line px-6 py-20 md:py-28">
+      <div className="mx-auto max-w-[1200px]">
         <div className="flex flex-wrap items-end justify-between gap-6">
           <div>
             <span className="label">All courses</span>
-            <h2 className="mt-4 text-[34px] leading-[1.02] font-semibold tracking-[-0.035em] md:text-[46px]">
-              Pick by what you need next
+            <h2 className="display-2 mt-5 max-w-[16ch]">
+              <AccentText>{"Pick by *what you need* next"}</AccentText>
             </h2>
           </div>
-          <div className="flex items-center gap-1 rounded-full border border-line p-1">
+          <div className="flex items-center gap-1 rounded-full border border-line bg-paper p-1 shadow-[var(--shadow-card)]">
             {(
               [
                 ["path", "Path order"],
@@ -45,7 +46,7 @@ export default function Catalog() {
               <button
                 key={k}
                 onClick={() => setSort(k)}
-                className={`rounded-full px-3 py-1.5 font-mono text-[10px] tracking-wider uppercase transition-colors ${
+                className={`rounded-full px-3.5 py-2 font-mono text-[9.5px] tracking-[0.14em] uppercase transition-colors ${
                   sort === k ? "bg-ink text-canvas" : "text-muted hover:text-ink"
                 }`}
               >
@@ -61,10 +62,10 @@ export default function Catalog() {
               setTopic(null);
               setLevel(null);
             }}
-            className={`rounded-full border px-3 py-1.5 text-[12.5px] transition-colors ${
+            className={`rounded-full border px-3.5 py-1.5 text-[12.5px] transition-colors ${
               !topic && !level
                 ? "border-ink bg-ink text-canvas"
-                : "border-line text-ink-2 hover:border-line-2"
+                : "border-line bg-paper text-ink-2 hover:border-ink"
             }`}
           >
             Everything
@@ -73,10 +74,10 @@ export default function Catalog() {
             <button
               key={l}
               onClick={() => setLevel(level === l ? null : l)}
-              className={`rounded-full border px-3 py-1.5 text-[12.5px] transition-colors ${
+              className={`rounded-full border px-3.5 py-1.5 text-[12.5px] transition-colors ${
                 level === l
                   ? "border-ink bg-ink text-canvas"
-                  : "border-line text-ink-2 hover:border-line-2"
+                  : "border-line bg-paper text-ink-2 hover:border-ink"
               }`}
             >
               {l}
@@ -87,10 +88,10 @@ export default function Catalog() {
             <button
               key={t}
               onClick={() => setTopic(topic === t ? null : t)}
-              className={`rounded-full border px-3 py-1.5 font-mono text-[11px] transition-colors ${
+              className={`rounded-full border px-3.5 py-1.5 font-mono text-[10.5px] tracking-[0.02em] transition-colors ${
                 topic === t
                   ? "border-flame bg-flame/10 text-flame"
-                  : "border-line text-muted hover:border-line-2 hover:text-ink"
+                  : "border-line bg-paper text-muted hover:border-ink hover:text-ink"
               }`}
             >
               {t}
@@ -106,7 +107,7 @@ export default function Catalog() {
             No course matches that pair of filters. Clear one to see more.
           </p>
         ) : (
-          <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="mt-9 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {list.map((c) => (
               <CourseCard key={c.slug} course={c} variant="grid" />
             ))}

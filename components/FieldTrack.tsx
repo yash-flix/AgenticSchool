@@ -8,6 +8,7 @@ import {
   thumb,
   watchUrl,
 } from "@/lib/courses";
+import AccentText from "./AccentText";
 import Reveal from "./Reveal";
 
 export default function FieldTrack() {
@@ -16,23 +17,21 @@ export default function FieldTrack() {
   return (
     <section
       id="field"
-      className="scroll-mt-20 border-t border-line bg-panel/45 px-6 py-20 md:py-28"
+      className="scroll-mt-24 border-t border-line bg-panel/45 px-6 py-20 md:py-28"
     >
-      <div className="mx-auto max-w-[1180px]">
+      <div className="mx-auto max-w-[1200px]">
         <div className="grid gap-x-10 gap-y-8 md:grid-cols-12">
           <Reveal className="md:col-span-6">
             <div className="flex items-center gap-3">
               <span className="label">Field track</span>
-              <span className="rounded-full border border-moss/40 bg-moss/8 px-2 py-0.5 font-mono text-[9.5px] tracking-[0.14em] text-moss uppercase">
-                Free resource
-              </span>
+              <span className="chip chip-free">Free resource</span>
             </div>
-            <h2 className="mt-4 max-w-[18ch] text-[34px] leading-[1.02] font-semibold tracking-[-0.035em] text-balance md:text-[46px]">
-              Watch working engineers do it
+            <h2 className="display-2 mt-5 max-w-[15ch]">
+              <AccentText>{"Watch *working engineers* do it"}</AccentText>
             </h2>
           </Reveal>
           <Reveal delay={80} className="md:col-span-5 md:col-start-8">
-            <p className="text-[16px] leading-[1.6] text-ink-2">
+            <p className="lede">
               The course path teaches you to build agents. This track shows you
               people already living with them: principal engineers, founders,
               and the teams shipping agentic workflows in production. Pulled
@@ -55,25 +54,25 @@ export default function FieldTrack() {
           </Reveal>
         </div>
 
-        <ol className="mt-14 overflow-hidden rounded-xl border border-line bg-canvas">
+        <ol className="card mt-14 overflow-hidden p-0 hover:translate-y-0 hover:shadow-[var(--shadow-card)]">
           {fieldTrack.map((v, i) => (
             <li key={v.videoId} className="border-b border-line last:border-b-0">
               <a
                 href={watchUrl(v.videoId)}
                 target="_blank"
                 rel="noreferrer"
-                className="group grid grid-cols-[38px_1fr] items-center gap-x-4 gap-y-2 px-4 py-3.5 transition-colors hover:bg-panel/70 sm:grid-cols-[38px_108px_minmax(0,1fr)_auto] sm:px-5"
+                className="group grid grid-cols-[34px_1fr] items-center gap-x-5 gap-y-2 px-4 py-4 transition-colors hover:bg-panel/60 sm:grid-cols-[34px_116px_minmax(0,1fr)_auto] sm:px-6"
               >
                 <span className="font-mono text-[11px] text-muted tabular-nums">
                   {String(i + 1).padStart(2, "0")}
                 </span>
 
-                <span className="relative hidden aspect-video w-[108px] overflow-hidden rounded-md border border-line bg-panel sm:block">
+                <span className="relative hidden aspect-video w-[116px] overflow-hidden rounded-lg border border-line bg-panel sm:block">
                   <Image
                     src={thumb(v.videoId)}
                     alt=""
                     fill
-                    sizes="108px"
+                    sizes="116px"
                     className="object-cover transition-transform duration-500 group-hover:scale-105"
                   />
                 </span>
@@ -109,7 +108,7 @@ export default function FieldTrack() {
             href={playlistUrl}
             target="_blank"
             rel="noreferrer"
-            className="rounded-full border border-line-2 px-5 py-2.5 text-[14px] font-medium transition-colors hover:bg-panel"
+            className="btn btn-ghost"
           >
             Open the full playlist
           </a>

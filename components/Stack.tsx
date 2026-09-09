@@ -1,3 +1,4 @@
+import AccentText from "./AccentText";
 import Reveal from "./Reveal";
 
 const builds = [
@@ -51,28 +52,31 @@ const notes = [
 export default function Stack() {
   return (
     <>
-      <section id="stack" className="scroll-mt-20 border-t border-line bg-panel/50 px-6 py-20 md:py-28">
-        <div className="mx-auto max-w-[1180px]">
+      <section id="stack" className="scroll-mt-24 border-t border-line px-6 py-20 md:py-28">
+        <div className="mx-auto max-w-[1200px]">
           <Reveal>
             <span className="label">What you build</span>
-            <h2 className="mt-4 max-w-[20ch] text-[34px] leading-[1.02] font-semibold tracking-[-0.035em] text-balance md:text-[46px]">
-              Finish the path with three things that work
+            <h2 className="display-2 mt-5 max-w-[18ch]">
+              <AccentText>{"Finish the path with three things that *actually work*"}</AccentText>
             </h2>
           </Reveal>
 
-          <div className="mt-12 grid gap-px overflow-hidden rounded-xl border border-line bg-line md:grid-cols-3">
+          <div className="mt-14 grid gap-5 md:grid-cols-3">
             {builds.map((b, i) => (
               <Reveal key={b.n} delay={i * 90}>
-                <div className="h-full bg-canvas p-6">
-                  <span className="label">{b.n}</span>
-                  <h3 className="mt-4 text-[20px] leading-[1.15] font-semibold tracking-[-0.025em]">
-                    {b.title}
-                  </h3>
-                  <p className="mt-3 text-[14.5px] leading-[1.55] text-ink-2">
+                <div className="card flex h-full flex-col p-7">
+                  <span
+                    aria-hidden
+                    className="ghost-num text-[40px] leading-none"
+                  >
+                    {b.n}
+                  </span>
+                  <h3 className="display-4 mt-5">{b.title}</h3>
+                  <p className="mt-3.5 text-[14.5px] leading-[1.6] text-ink-2">
                     {b.body}
                   </p>
-                  <p className="mt-6 rule-x pt-4 font-mono text-[10px] tracking-widest text-muted uppercase">
-                    {b.from}
+                  <p className="rule-x mt-auto pt-5 font-mono text-[9.5px] tracking-[0.15em] text-muted uppercase">
+                    <span className="bg-paper pr-2">{b.from}</span>
                   </p>
                 </div>
               </Reveal>
@@ -81,24 +85,29 @@ export default function Stack() {
         </div>
       </section>
 
-      <section id="faq" className="scroll-mt-20 border-t border-line px-6 py-20 md:py-28">
-        <div className="mx-auto grid max-w-[1180px] gap-10 md:grid-cols-12">
+      <section id="faq" className="scroll-mt-24 border-t border-line bg-panel/45 px-6 py-20 md:py-28">
+        <div className="mx-auto grid max-w-[1200px] gap-x-12 gap-y-10 md:grid-cols-12">
           <Reveal className="md:col-span-4">
             <span className="label">Notes</span>
-            <h2 className="mt-4 text-[32px] leading-[1.05] font-semibold tracking-[-0.035em] md:text-[40px]">
-              How to use this
+            <h2 className="display-2 mt-5">
+              <AccentText>{"How to *use this*"}</AccentText>
             </h2>
           </Reveal>
           <div className="md:col-span-7 md:col-start-6">
             {notes.map((n, i) => (
               <Reveal key={n.q} delay={i * 60}>
-                <div className="border-b border-line py-6 first:pt-0">
-                  <h3 className="text-[17px] font-medium tracking-[-0.02em]">
-                    {n.q}
-                  </h3>
-                  <p className="mt-2.5 max-w-[60ch] text-[15px] leading-[1.6] text-ink-2">
-                    {n.a}
-                  </p>
+                <div className="flex gap-6 border-b border-line-2 py-7 first:pt-0">
+                  <span className="label mt-1.5 shrink-0">
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                  <div>
+                    <h3 className="text-[17.5px] font-medium tracking-[-0.024em]">
+                      {n.q}
+                    </h3>
+                    <p className="mt-2.5 max-w-[58ch] text-[15px] leading-[1.65] text-ink-2">
+                      {n.a}
+                    </p>
+                  </div>
                 </div>
               </Reveal>
             ))}

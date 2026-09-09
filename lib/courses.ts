@@ -29,7 +29,7 @@ export const stages: Stage[] = [
     id: "ground",
     index: "1.0",
     name: "Ground",
-    headline: "Learn what an agent actually is before you wire one up",
+    headline: "Learn what an *agent* actually is before you wire one up",
     blurb:
       "Models, tools, loops, and state. These three courses give you the vocabulary and the first working agent, without hiding anything behind a framework.",
   },
@@ -37,7 +37,7 @@ export const stages: Stage[] = [
     id: "orchestrate",
     index: "2.0",
     name: "Orchestrate",
-    headline: "Move from one agent to a team that coordinates",
+    headline: "Move from one agent to a *team* that coordinates",
     blurb:
       "Graphs, roles, handoffs, and control flow. Learn the three orchestration models that every production agent stack is built on top of.",
   },
@@ -45,7 +45,7 @@ export const stages: Stage[] = [
     id: "context",
     index: "3.0",
     name: "Context",
-    headline: "Give your agents something real to work with",
+    headline: "Give your agents *something real* to work with",
     blurb:
       "An agent is only as good as what it can read and reach. Retrieval, vector stores, memory, and the protocol that plugs agents into your tools.",
   },
@@ -53,7 +53,7 @@ export const stages: Stage[] = [
     id: "ship",
     index: "4.0",
     name: "Ship",
-    headline: "Build the projects that prove you can do this",
+    headline: "Build the projects that *prove* you can do this",
     blurb:
       "End with two long build-alongs. One writes real Python, one ships client-ready automations. Both leave you with something to show.",
   },

@@ -41,8 +41,8 @@ export default async function CoursePage({ params }: Params) {
   return (
     <>
       <Nav />
-      <main className="px-6 pt-10 pb-20">
-        <div className="mx-auto max-w-[1180px]">
+      <main className="relative px-6 pt-10 pb-24">
+        <div className="mx-auto max-w-[1200px]">
           <Link
             href="/#path"
             className="label transition-colors hover:text-ink"
@@ -52,41 +52,45 @@ export default async function CoursePage({ params }: Params) {
 
           <div className="mt-8 grid gap-10 md:grid-cols-12">
             <div className="md:col-span-7">
-              <div className="flex flex-wrap items-center gap-3">
-                <span className="label">
+              <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+                <span className="label text-ink">
                   {course.sub} — {stage.name}
                 </span>
                 <span className="label">{course.level}</span>
                 <span className="label">{fmtDuration(course.minutes)}</span>
                 <span className="label">{fmtViews(course.views)} views</span>
+                <span className="chip chip-free">Free</span>
               </div>
 
-              <h1 className="mt-5 text-[36px] leading-[1.02] font-semibold tracking-[-0.035em] text-balance md:text-[50px]">
+              <h1 className="display-2 mt-6 max-w-[16ch]">
                 {course.shortTitle}
               </h1>
-              <p className="mt-4 text-[15px] text-muted">
-                {course.title} · {course.channel}
+              <p className="mt-5 font-mono text-[11.5px] leading-relaxed tracking-[0.02em] text-muted">
+                {course.channel}
+                <span className="mx-2 text-line-2">/</span>
+                {course.title}
               </p>
-              <p className="mt-6 max-w-[58ch] text-[17px] leading-[1.55] text-ink-2">
-                {course.summary}
-              </p>
+              <p className="lede mt-7 max-w-[56ch]">{course.summary}</p>
 
               <div className="mt-8 flex flex-wrap items-center gap-3">
                 <a
                   href={watchUrl(course.videoId)}
                   target="_blank"
                   rel="noreferrer"
-                  className="rounded-full bg-ink px-5 py-2.5 text-[14px] font-medium text-canvas transition-transform hover:-translate-y-px"
+                  className="btn btn-solid"
                 >
                   Watch on YouTube
+                  <span aria-hidden className="text-[12px] opacity-60">
+                    ↗
+                  </span>
                 </a>
                 <MarkDone slug={course.slug} />
               </div>
             </div>
 
             <div className="md:col-span-5">
-              <div className="overflow-hidden rounded-xl border border-line bg-panel">
-                <div className="aspect-video">
+              <div className="overflow-hidden rounded-[16px] bg-obsidian p-2 shadow-[var(--shadow-panel)] ring-1 ring-black/10">
+                <div className="aspect-video overflow-hidden rounded-[10px]">
                   <iframe
                     className="h-full w-full"
                     src={`https://www.youtube-nocookie.com/embed/${course.videoId}`}
@@ -98,10 +102,7 @@ export default async function CoursePage({ params }: Params) {
               </div>
               <div className="mt-4 flex flex-wrap gap-1.5">
                 {course.topics.map((t) => (
-                  <span
-                    key={t}
-                    className="rounded-full border border-line px-2.5 py-1 font-mono text-[10px] tracking-wide text-muted"
-                  >
+                  <span key={t} className="chip">
                     {t}
                   </span>
                 ))}
@@ -112,32 +113,33 @@ export default async function CoursePage({ params }: Params) {
           <div className="mt-16 grid gap-10 border-t border-line pt-12 md:grid-cols-12">
             <div className="md:col-span-4">
               <span className="label">What you walk away with</span>
+              <h2 className="display-3 mt-5 max-w-[12ch]">Outcomes</h2>
             </div>
             <ul className="md:col-span-7 md:col-start-6">
               {course.outcomes.map((o, k) => (
                 <li
                   key={o}
-                  className="flex gap-5 border-b border-line py-4 first:pt-0"
+                  className="flex gap-6 border-b border-line-2 py-5 first:pt-0"
                 >
-                  <span className="font-mono text-[11px] text-muted">
+                  <span className="mt-1 font-mono text-[11px] text-muted tabular-nums">
                     {String(k + 1).padStart(2, "0")}
                   </span>
-                  <span className="text-[16px] leading-[1.5]">{o}</span>
+                  <span className="text-[16.5px] leading-[1.5] tracking-[-0.014em]">
+                    {o}
+                  </span>
                 </li>
               ))}
             </ul>
           </div>
 
-          <nav className="mt-16 grid gap-4 border-t border-line pt-8 sm:grid-cols-2">
+          <nav className="mt-20 grid gap-5 border-t border-line pt-9 sm:grid-cols-2">
             {prev ? (
               <Link
                 href={`/course/${prev.slug}`}
-                className="rounded-xl border border-line p-5 transition-colors hover:bg-panel"
+                className="card p-6"
               >
                 <span className="label">← Previous · {prev.n}</span>
-                <p className="mt-2 text-[17px] font-medium tracking-[-0.02em]">
-                  {prev.shortTitle}
-                </p>
+                <p className="display-4 mt-3">{prev.shortTitle}</p>
               </Link>
             ) : (
               <span />
@@ -145,12 +147,10 @@ export default async function CoursePage({ params }: Params) {
             {next && (
               <Link
                 href={`/course/${next.slug}`}
-                className="rounded-xl border border-line p-5 text-right transition-colors hover:bg-panel sm:col-start-2"
+                className="card p-6 text-right sm:col-start-2"
               >
                 <span className="label">Next · {next.n} →</span>
-                <p className="mt-2 text-[17px] font-medium tracking-[-0.02em]">
-                  {next.shortTitle}
-                </p>
+                <p className="display-4 mt-3">{next.shortTitle}</p>
               </Link>
             )}
           </nav>
