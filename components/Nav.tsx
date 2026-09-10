@@ -7,6 +7,7 @@ import { courses } from "@/lib/courses";
 import { CONTINUITY_SPRING } from "@/lib/motion";
 import { useProgress } from "@/lib/useProgress";
 import AuthButton from "./AuthButton";
+import ContinueButton from "./ContinueButton";
 import FreeBadge from "./FreeBadge";
 import Logo from "./Logo";
 
@@ -98,9 +99,7 @@ export default function Nav() {
             </span>
           </span>
           <AuthButton />
-          <a href="#path" className="btn btn-solid btn-sm">
-            Start the path
-          </a>
+          <ContinueButton className="hidden sm:block" />
           <motion.button
             onClick={() => setOpen((v) => !v)}
             aria-label="Menu"
@@ -149,6 +148,10 @@ export default function Nav() {
               {l.label}
             </a>
           ))}
+              {/* The bar hides the CTA under sm, so the menu has to carry it. */}
+              <div className="py-4" onClick={() => setOpen(false)}>
+                <ContinueButton className="[&_a]:w-full [&_a]:justify-center sm:hidden" />
+              </div>
             </div>
           </motion.div>
         )}

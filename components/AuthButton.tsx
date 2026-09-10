@@ -1,57 +1,38 @@
 "use client";
 
 import { AnimatePresence, motion } from "motion/react";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { courses } from "@/lib/courses";
 import {
   CONTINUITY_LABEL,
   CONTINUITY_PANEL,
   CONTINUITY_SPRING,
 } from "@/lib/motion";
 import { browserSupabase } from "@/lib/supabase/client";
+import { useProgress } from "@/lib/useProgress";
 import { useViewer } from "@/lib/useViewer";
 
 export default function AuthButton() {
   const { viewer, enabled } = useViewer();
+  const { done, ready } = useProgress();
   const [open, setOpen] = useState(false);
   const [busy, setBusy] = useState<string | null>(null);
+  const box = useRef<HTMLDivElement>(null);
 
-
-  if (viewer) {
-    return (
-      <motion.form
-        layout
-        transition={CONTINUITY_SPRING}
-        initial={{ opacity: 0, x: 8 }}
-        animate={{ opacity: 1, x: 0 }}
-        action="/auth/signout"
-        method="post"
-        className="flex items-center gap-3"
-      >
-        <span className="flex items-center gap-2">
-          {viewer.avatar ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
-              src={viewer.avatar}
-              alt=""
-              width={26}
-              height={26}
-              className="h-[26px] w-[26px] rounded-full border border-line"
-            />
-          ) : (
-            <span className="grid h-[26px] w-[26px] place-items-center rounded-full bg-panel font-mono text-[10px]">
-              {viewer.name.slice(0, 1).toUpperCase()}
-            </span>
-          )}
-          <span className="hidden text-[13.5px] text-ink-2 sm:block">
-            {viewer.handle ? `@${viewer.handle}` : viewer.name}
-          </span>
-        </span>
-        <button type="submit" className="label transition-colors hover:text-flame">
-          Sign out
-        </button>
-      </motion.form>
-    );
-  }
+  // A menu that only closes by clicking its own trigger feels broken.
+  useEffect(() => {
+    if (!open) return;
+    const onDown = (e: PointerEvent) => {
+      if (!box.current?.contains(e.target as Node)) setOpen(false);
+    };
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
+    document.addEventListener("pointerdown", onDown);
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("pointerdown", onDown);
+      document.removeEventListener("keydown", onKey);
+    };
+  }, [open]);
 
   async function signIn(provider: "github" | "google") {
     const supabase = browserSupabase();
@@ -67,11 +48,90 @@ export default function AuthButton() {
     });
   }
 
+  const avatar = viewer?.avatar;
+  const pct = ready ? Math.round((done.length / courses.length) * 100) : 0;
+
+  /* ------------------------------------------------------------ signed in */
+  if (viewer) {
+    return (
+      <div ref={box} className="relative">
+        {/* The handle and sign-out used to sit in the bar beside the avatar.
+            Folded into this menu, the header keeps room for the real action. */}
+        <button
+          onClick={() => setOpen((v) => !v)}
+          aria-expanded={open}
+          aria-label="Account"
+          className="grid h-[30px] w-[30px] place-items-center overflow-hidden rounded-full border border-line-2 transition-colors hover:border-ink"
+        >
+          {avatar ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={avatar} alt="" width={30} height={30} className="h-full w-full object-cover" />
+          ) : (
+            <span className="font-mono text-[11px] text-ink-2">
+              {viewer.name.slice(0, 1).toUpperCase()}
+            </span>
+          )}
+        </button>
+
+        <AnimatePresence initial={false}>
+          {open && (
+            <motion.div
+              key="account-menu"
+              variants={CONTINUITY_PANEL}
+              initial="hidden"
+              animate="visible"
+              exit="exit"
+              transition={CONTINUITY_SPRING}
+              className="card absolute right-0 z-20 mt-2 w-60 origin-top-right p-2 hover:translate-y-0"
+            >
+              <div className="px-3 pt-2 pb-3">
+                <p className="truncate text-[14px] font-medium">{viewer.name}</p>
+                {viewer.handle && (
+                  <p className="mt-0.5 truncate font-mono text-[10.5px] text-muted">
+                    @{viewer.handle}
+                  </p>
+                )}
+              </div>
+
+              <div className="border-t border-line px-3 py-3">
+                <div className="flex items-baseline justify-between">
+                  <span className="label">Progress</span>
+                  <span className="font-mono text-[11px] text-ink-2 tabular-nums">
+                    {ready ? done.length : 0}/{courses.length}
+                  </span>
+                </div>
+                <span className="mt-2.5 block h-[3px] rounded-full bg-line-2">
+                  <motion.span
+                    initial={false}
+                    animate={{ width: `${pct}%` }}
+                    transition={CONTINUITY_SPRING}
+                    className="block h-full rounded-full bg-flame"
+                  />
+                </span>
+              </div>
+
+              <form action="/auth/signout" method="post" className="border-t border-line pt-1">
+                <button
+                  type="submit"
+                  className="w-full rounded-lg px-3 py-2.5 text-left text-[14px] transition-colors hover:bg-panel hover:text-flame"
+                >
+                  Sign out
+                </button>
+              </form>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+    );
+  }
+
+  /* ----------------------------------------------------------- signed out */
   return (
-    <div className="relative">
-      <button onClick={() => setOpen((v) => !v)} className="btn btn-ghost btn-sm">
+    <div ref={box} className="relative">
+      <button onClick={() => setOpen((v) => !v)} aria-expanded={open} className="btn btn-ghost btn-sm">
         Sign in
       </button>
+
       <AnimatePresence initial={false}>
         {open && (
           <motion.div
@@ -109,6 +169,7 @@ export default function AuthButton() {
                 </motion.span>
               </AnimatePresence>
             </motion.button>
+
             <motion.button
               layout
               transition={CONTINUITY_SPRING}
@@ -138,16 +199,11 @@ export default function AuthButton() {
                 </motion.span>
               </AnimatePresence>
             </motion.button>
+
             <p className="mt-1 border-t border-line px-3 py-2.5 text-[11.5px] leading-relaxed text-muted">
-              {enabled ? (
-                "Signing in syncs your progress across devices and lets you post to the wall."
-              ) : (
-                <>
-                  Accounts are not switched on yet. Add the Supabase keys from{" "}
-                  <code className="font-mono text-[10.5px]">.env.example</code> to
-                  enable sign-in.
-                </>
-              )}
+              {enabled
+                ? "Signing in syncs your progress across devices and lets you post to the wall."
+                : "Accounts are not switched on yet."}
             </p>
           </motion.div>
         )}
