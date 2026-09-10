@@ -1,6 +1,8 @@
 "use client";
 
 import { AnimatePresence, motion } from "motion/react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { courses } from "@/lib/courses";
 import { CONTINUITY_SPRING } from "@/lib/motion";
@@ -9,13 +11,18 @@ import AuthButton from "./AuthButton";
 import ContinueButton from "./ContinueButton";
 import FreeBadge from "./FreeBadge";
 import Logo from "./Logo";
+import ThemeToggle from "./ThemeToggle";
 
+/**
+ * `route` is what the link is active on. Anchor links into the home page
+ * share one route and never light up individually; the section pages do.
+ */
 const links = [
-  { href: "/#path", label: "The path" },
-  { href: "/#catalog", label: "All courses" },
-  { href: "/#field", label: "Field track" },
-  { href: "/community", label: "Community" },
-  { href: "/#faq", label: "Notes" },
+  { href: "/#path", label: "The path", route: null },
+  { href: "/#catalog", label: "All courses", route: null },
+  { href: "/#field", label: "Field track", route: null },
+  { href: "/notes", label: "Notes", route: "/notes" },
+  { href: "/community", label: "Community", route: "/community" },
 ];
 
 /** Circumference of the r=7 progress ring, so the dash maths stays readable. */
@@ -23,8 +30,17 @@ const RING = 2 * Math.PI * 7;
 
 export default function Nav() {
   const [scrolled, setScrolled] = useState(false);
-  const [open, setOpen] = useState(false);
   const { done, ready } = useProgress();
+  const pathname = usePathname();
+
+  // The sheet remembers which route it was opened on, so a navigation closes
+  // it by derivation rather than by an effect that sets state.
+  const [openAt, setOpenAt] = useState<string | null>(null);
+  const open = openAt === pathname;
+  const setOpen = (v: boolean) => setOpenAt(v ? pathname : null);
+
+  const isActive = (route: string | null) =>
+    route !== null && (pathname === route || pathname.startsWith(`${route}/`));
 
   useEffect(() => {
     const on = () => setScrolled(window.scrollY > 8);
@@ -35,45 +51,56 @@ export default function Nav() {
 
   return (
     <header
-      className={`sticky top-0 z-50 transition-colors duration-300 ${
-        scrolled
-          ? "border-b border-line bg-canvas/80 backdrop-blur-xl"
+      className={`sticky top-0 z-50 transition-[background-color,border-color,box-shadow] duration-300 ${
+        scrolled || open
+          ? "border-b border-line bg-canvas/85 shadow-[0_1px_0_rgba(255,255,255,0.6)_inset,0_10px_30px_-24px_rgba(21,21,26,0.35)] backdrop-blur-xl"
           : "border-b border-transparent"
       }`}
     >
-      <div className="mx-auto grid h-[68px] max-w-[1200px] grid-cols-[1fr_auto_1fr] items-center gap-6 px-6">
-        <div className="flex items-center gap-3">
+      <div className="mx-auto flex h-[64px] max-w-[1200px] items-center gap-6 px-6">
+        {/* brand */}
+        <div className="flex min-w-0 items-center gap-3">
           <Logo href="/" />
-          <FreeBadge className="hidden sm:inline-flex" />
+          <FreeBadge className="hidden lg:inline-flex" />
         </div>
 
-        <nav className="hidden items-center gap-0.5 md:flex">
-          {links.map((l) => (
-            <a
-              key={l.href}
-              href={l.href}
-              className="rounded-full px-3 py-1.5 text-[13.5px] text-ink-2 transition-colors hover:bg-panel hover:text-ink"
-            >
-              {l.label}
-            </a>
-          ))}
+        {/* primary */}
+        <nav
+          aria-label="Primary"
+          className="mx-auto hidden items-center gap-0.5 rounded-full border border-line bg-paper/70 p-1 md:flex"
+        >
+          {links.map((l) => {
+            const active = isActive(l.route);
+            return (
+              <Link
+                key={l.href}
+                href={l.href}
+                aria-current={active ? "page" : undefined}
+                className={`relative rounded-full px-3.5 py-1.5 text-[13px] tracking-[-0.01em] transition-colors ${
+                  active ? "text-ink" : "text-ink-2 hover:text-ink"
+                }`}
+              >
+                {active && (
+                  <motion.span
+                    layoutId="nav-active-pill"
+                    transition={CONTINUITY_SPRING}
+                    className="absolute inset-0 rounded-full bg-panel-2/80"
+                  />
+                )}
+                <span className="relative z-10">{l.label}</span>
+              </Link>
+            );
+          })}
         </nav>
 
-        <div className="flex items-center justify-end gap-3">
-          {/* A ring reads as progress at a glance; the bare fraction did not. */}
+        {/* actions */}
+        <div className="ml-auto flex items-center gap-3 md:ml-0">
           <span
             className="hidden items-center gap-2 lg:flex"
             title={`${done.length} of ${courses.length} courses marked done`}
           >
             <svg viewBox="0 0 18 18" className="h-[18px] w-[18px] -rotate-90">
-              <circle
-                cx="9"
-                cy="9"
-                r="7"
-                fill="none"
-                strokeWidth="2"
-                className="stroke-line-2"
-              />
+              <circle cx="9" cy="9" r="7" fill="none" strokeWidth="2" className="stroke-line-2" />
               <motion.circle
                 cx="9"
                 cy="9"
@@ -85,8 +112,7 @@ export default function Nav() {
                 strokeDasharray={RING}
                 initial={false}
                 animate={{
-                  strokeDashoffset:
-                    RING * (1 - (ready ? done.length / courses.length : 0)),
+                  strokeDashoffset: RING * (1 - (ready ? done.length / courses.length : 0)),
                 }}
                 transition={CONTINUITY_SPRING}
               />
@@ -95,35 +121,44 @@ export default function Nav() {
               {ready ? `${done.length}/${courses.length}` : ""}
             </span>
           </span>
+
+          <span aria-hidden className="hidden h-5 w-px bg-line lg:block" />
+
+          <ThemeToggle className="hidden sm:grid" />
           <AuthButton />
           <ContinueButton className="hidden sm:block" />
+
           <motion.button
-            onClick={() => setOpen((v) => !v)}
-            aria-label="Menu"
+            onClick={() => setOpen(!open)}
+            aria-label={open ? "Close menu" : "Open menu"}
             aria-expanded={open}
-            whileTap={{ scale: 0.9 }}
-            className="grid h-9 w-9 place-items-center rounded-full border border-line-2 md:hidden"
+            whileTap={{ scale: 0.92 }}
+            className="grid h-9 w-9 place-items-center rounded-full border border-line-2 bg-paper md:hidden"
           >
-            {/* The two glyphs occupy the same cell, so one rotates out as the
-                other rotates in instead of the button twitching. */}
-            <span className="grid grid-cols-1 grid-rows-1 place-items-center">
-              <AnimatePresence mode="popLayout" initial={false}>
-                <motion.span
-                  key={open ? "close" : "open"}
-                  initial={{ opacity: 0, rotate: -90, scale: 0.6 }}
-                  animate={{ opacity: 1, rotate: 0, scale: 1 }}
-                  exit={{ opacity: 0, rotate: 90, scale: 0.6 }}
-                  transition={CONTINUITY_SPRING}
-                  className="col-start-1 row-start-1 font-mono text-xs"
-                >
-                  {open ? "\u00d7" : "\u2261"}
-                </motion.span>
-              </AnimatePresence>
+            {/* Two bars that rotate into a cross, so open and closed are one
+                mark in two states. */}
+            <span className="relative block h-3 w-4">
+              <motion.span
+                animate={open ? { y: 5, rotate: 45 } : { y: 0, rotate: 0 }}
+                transition={CONTINUITY_SPRING}
+                className="absolute top-0 left-0 block h-[1.5px] w-4 rounded-full bg-ink"
+              />
+              <motion.span
+                animate={open ? { opacity: 0 } : { opacity: 1 }}
+                transition={{ duration: 0.15 }}
+                className="absolute top-[5px] left-0 block h-[1.5px] w-4 rounded-full bg-ink"
+              />
+              <motion.span
+                animate={open ? { y: -5, rotate: -45 } : { y: 0, rotate: 0 }}
+                transition={CONTINUITY_SPRING}
+                className="absolute top-[10px] left-0 block h-[1.5px] w-4 rounded-full bg-ink"
+              />
             </span>
           </motion.button>
         </div>
       </div>
 
+      {/* mobile sheet */}
       <AnimatePresence initial={false}>
         {open && (
           <motion.div
@@ -132,22 +167,51 @@ export default function Nav() {
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
             transition={CONTINUITY_SPRING}
-            className="overflow-hidden border-t border-line bg-canvas px-6 md:hidden"
+            className="overflow-hidden border-t border-line md:hidden"
           >
-            <div className="py-2">
-          {links.map((l) => (
-            <a
-              key={l.href}
-              href={l.href}
-              onClick={() => setOpen(false)}
-              className="block border-b border-line py-3 text-[15px] text-ink-2 last:border-b-0"
-            >
-              {l.label}
-            </a>
-          ))}
-              {/* The bar hides the CTA under sm, so the menu has to carry it. */}
-              <div className="py-4" onClick={() => setOpen(false)}>
-                <ContinueButton className="[&_a]:w-full [&_a]:justify-center sm:hidden" />
+            <div className="px-6 pt-3 pb-5">
+              <ul className="divide-y divide-line">
+                {links.map((l, i) => {
+                  const active = isActive(l.route);
+                  return (
+                    <motion.li
+                      key={l.href}
+                      initial={{ opacity: 0, x: -6 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ ...CONTINUITY_SPRING, delay: i * 0.03 }}
+                    >
+                      <Link
+                        href={l.href}
+                        onClick={() => setOpen(false)}
+                        aria-current={active ? "page" : undefined}
+                        className={`flex items-center justify-between py-3.5 text-[15.5px] tracking-[-0.012em] ${
+                          active ? "text-ink" : "text-ink-2"
+                        }`}
+                      >
+                        {l.label}
+                        <span
+                          aria-hidden
+                          className={`font-mono text-[11px] ${active ? "text-flame" : "text-line-2"}`}
+                        >
+                          {active ? "●" : "→"}
+                        </span>
+                      </Link>
+                    </motion.li>
+                  );
+                })}
+              </ul>
+
+              <div className="mt-4 flex items-center justify-between gap-4 rounded-xl border border-line bg-paper p-3">
+                <span className="flex items-center gap-2.5">
+                  <ThemeToggle />
+                  <FreeBadge className="inline-flex" />
+                  <span className="label tabular-nums">
+                    {ready ? `${done.length}/${courses.length} done` : ""}
+                  </span>
+                </span>
+                <span onClick={() => setOpen(false)}>
+                  <ContinueButton />
+                </span>
               </div>
             </div>
           </motion.div>

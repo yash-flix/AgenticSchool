@@ -64,7 +64,7 @@ export default function Stack() {
       <section id="faq" className="scroll-mt-24 border-t border-line bg-panel/45 px-6 py-20 md:py-28">
         <div className="mx-auto grid max-w-[1200px] gap-x-12 gap-y-10 md:grid-cols-12">
           <Reveal className="md:col-span-4">
-            <span className="label">Notes</span>
+            <span className="label">Questions</span>
             <h2 className="display-2 mt-5">
               <AccentText>{"How to *use this*"}</AccentText>
             </h2>

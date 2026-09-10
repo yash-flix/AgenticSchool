@@ -86,5 +86,22 @@ playlist link are in the same file.
 
 The community page's reference library is in `lib/community.ts`.
 
+## Adding a note
+
+The `/notes` section is the written alternative to the video path. Each entry
+is one MDX file plus one registry line:
+
+1. Write `content/notes/<slug>.mdx`. Plain markdown works; GitHub tables and
+   task lists are on. `<Callout label="Try it">…</Callout>` is available in
+   every note without an import.
+2. Add an entry to the `notes` array in `lib/notes.ts` with the same `slug`,
+   a title, a one-line summary, a `kind` (`note`, `article` or `doc`), an ISO
+   `date`, some topics, and the course slugs it pairs with.
+
+Reading time is computed from the file. The index, the note page, the
+home-page teaser and the prev/next links all come from the registry, so
+nothing else needs touching. The element styles for rendered markdown live in
+`mdx-components.tsx`.
+
 Course metadata (durations, channels, view counts) and the reference repository
 counts were read in September 2026.

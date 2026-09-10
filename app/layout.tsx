@@ -49,9 +49,18 @@ export default function RootLayout({
   return (
     <html
       lang="en"
+      suppressHydrationWarning
       className={`${geist.variable} ${geistMono.variable} ${instrumentSerif.variable} ${caveat.variable}`}
     >
       <head>
+        {/* Theme before first paint: a stored choice wins, otherwise the
+            system preference, which is then followed live until the user
+            picks. Runs inline so there is no flash of the wrong theme. */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var r=document.documentElement,s=localStorage.getItem("theme"),m=window.matchMedia("(prefers-color-scheme: dark)");r.dataset.theme=s==="dark"||s==="light"?s:(m.matches?"dark":"light");m.addEventListener("change",function(e){if(!localStorage.getItem("theme"))r.dataset.theme=e.matches?"dark":"light"})}catch(e){}})();`,
+          }}
+        />
         {/* Every section starts at opacity 0 and is revealed by JavaScript.
             Without this the whole site renders blank when scripts fail. */}
         <noscript>

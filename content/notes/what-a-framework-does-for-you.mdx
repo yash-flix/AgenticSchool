@@ -1,0 +1,53 @@
+Courses 04, 05 and 06 each teach one framework for around ten hours. People
+stall here because they try to learn all three and pick afterwards. Learn the
+three problems instead, then pick the framework whose shape matches yours.
+
+## Problem one: the loop has branches
+
+The [plain loop](/notes/the-agent-loop-in-one-page) has one path through it.
+Real agents do not. A research agent might search, decide the results are
+thin, search again with a new query, and only then read. Once you have an
+`if` inside the loop, you have a graph, and it is easier to draw the graph
+than to hide it in control flow.
+
+**LangGraph** takes this literally. Nodes are functions, edges are the
+conditions between them, and state is a typed dict that flows along the edges.
+If your agent is best described as a diagram, this is the one.
+
+## Problem two: the work splits by role
+
+Some tasks decompose into people. A report needs someone to find sources,
+someone to check them, and someone to write. Each of those wants its own
+prompt, its own tools, and its own idea of done.
+
+**CrewAI** starts from the roles and works back to the flow. You describe the
+agents like a job posting and the tasks like a ticket, and the framework
+runs the handoffs. It is fastest to get going and hardest to steer when the
+handoffs go wrong.
+
+**The OpenAI Agents SDK** does the same thing with less ceremony and one
+vendor. An agent is a prompt plus tools plus a list of agents it may hand off
+to. If you are already on that platform, the tracing alone is worth it.
+
+## Problem three: it has to stop and come back
+
+An agent that asks a human a question has to survive until the answer
+arrives. That means the loop's state lives somewhere durable and the loop can
+be resumed from it.
+
+This is where the three separate. LangGraph checkpoints every step and
+resuming is a first-class operation. The SDK has sessions. CrewAI expects you
+to run to completion.
+
+<Callout label="Pick in ten minutes">
+Draw your agent on paper. If the drawing is a flowchart, use LangGraph. If it
+is an org chart, use CrewAI or the SDK. If a human has to approve something in
+the middle, the choice is made for you.
+</Callout>
+
+## What none of them do
+
+They do not make the model better at the task. They do not write your
+prompts, choose your tools, or tell you when the agent is wrong. Course 02
+spends real time on evaluation and guardrails, and that time transfers
+across all three frameworks, which is more than can be said for the syntax.

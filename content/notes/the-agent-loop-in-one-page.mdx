@@ -1,0 +1,57 @@
+An agent is a model in a loop with tools. Everything on the path, from
+LangGraph to n8n, is a way of drawing this loop with more boxes. Read it once
+in plain Python and the boxes become legible.
+
+## The loop
+
+```python
+messages = [{"role": "system", "content": SYSTEM}, {"role": "user", "content": task}]
+
+while True:
+    reply = model(messages, tools=TOOLS)          # 1. think
+    messages.append(reply)
+
+    if not reply.tool_calls:                      # 2. done?
+        return reply.content
+
+    for call in reply.tool_calls:                 # 3. act
+        result = TOOLS[call.name](**call.args)
+        messages.append(tool_result(call.id, result))   # 4. observe
+```
+
+Four moves, in order: **think**, check whether the model asked for a tool,
+**act** on each call, append the **observation**, and go round again. The model
+decides when the loop ends by answering in prose instead of asking for a tool.
+
+## The three things that go wrong
+
+**It never stops.** The model keeps calling tools because nothing tells it
+the job is done. Put a step cap on the loop and give it a tool called
+`finish`. Course 04 formalises this as a graph with an explicit end node.
+
+**It calls a tool badly.** Free-text arguments break. Structured outputs, a
+schema the model has to fill in, fix most of this. Course 03 spends a third of
+its runtime here and it is the best-spent third on the path.
+
+**It forgets.** `messages` grows until the model cannot see the start of the
+task. Summarise old turns, or store them and retrieve the relevant ones. That
+is memory, and it is what course 08 is about once you strip the branding.
+
+<Callout label="Build it">
+Write this loop with two tools, `search(query)` and `read(url)`, and no
+framework. When it works, you have done course 03. When it breaks, you know
+which part of course 04 to watch.
+</Callout>
+
+## What the frameworks add
+
+| Problem in the loop | LangGraph | CrewAI | OpenAI Agents SDK |
+| --- | --- | --- | --- |
+| Branching control flow | Graph edges | Task order | Handoffs |
+| Several specialised agents | One node each | One crew member each | One agent each |
+| Stopping and resuming | Checkpoints | Not really | Sessions |
+
+Nothing in that table is impossible in the forty lines above. They exist
+because the forty lines get long, and long code wants structure. Read [what a
+framework actually does for you](/notes/what-a-framework-does-for-you) before
+choosing one.

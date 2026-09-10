@@ -5,6 +5,7 @@ import Footer from "@/components/Footer";
 import Hero from "@/components/Hero";
 import Marquee from "@/components/Marquee";
 import Nav from "@/components/Nav";
+import NotesTeaser from "@/components/NotesTeaser";
 import Stack from "@/components/Stack";
 import Stages from "@/components/Stages";
 
@@ -22,6 +23,7 @@ export default function Home() {
         <Catalog />
         <FieldTrack />
         <Curated />
+        <NotesTeaser />
         <Stack />
       </main>
       <Footer />

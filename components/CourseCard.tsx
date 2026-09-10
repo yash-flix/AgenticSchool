@@ -17,6 +17,12 @@ const levelTone: Record<Course["level"], string> = {
   Advanced: "bg-flame",
 };
 
+/**
+ * Two variants share one body. In the grid every row of the body has a fixed
+ * height (title two lines, channel one, summary three, topics one), so the
+ * cards line up across a row and the button bar sits on the same baseline
+ * whatever the copy does.
+ */
 export default function CourseCard({
   course,
   variant = "path",
@@ -30,18 +36,18 @@ export default function CourseCard({
 
   return (
     <article
-      className={`card group overflow-hidden ${
+      className={`card group h-full overflow-hidden ${
         complete ? "border-moss/40" : ""
       }`}
     >
       {complete && (
         <span
           aria-hidden
-          className="absolute inset-y-0 left-0 w-[3px] bg-moss/70"
+          className="absolute inset-y-0 left-0 z-10 w-[3px] bg-moss/70"
         />
       )}
 
-      <div className={wide ? "grid sm:grid-cols-[320px_1fr]" : "flex flex-col"}>
+      <div className={wide ? "grid h-full sm:grid-cols-[320px_1fr]" : "flex h-full flex-col"}>
         <Link
           href={`/course/${course.slug}`}
           className={`relative block overflow-hidden bg-panel ${
@@ -59,7 +65,19 @@ export default function CourseCard({
             sizes="(max-width: 640px) 100vw, 380px"
             className="object-cover transition-transform duration-[600ms] ease-out group-hover:scale-[1.05]"
           />
-          <span className="absolute inset-0 bg-gradient-to-t from-obsidian/55 via-transparent to-transparent" />
+          <span className="absolute inset-0 bg-gradient-to-t from-obsidian/60 via-transparent to-obsidian/10" />
+
+          {/* number and level live on the image, so the body starts clean */}
+          <span className="absolute top-2.5 left-2.5 flex items-center gap-1.5">
+            <span className="rounded-md bg-canvas/95 px-2 py-1 font-mono text-[10.5px] tracking-[0.08em] text-ink tabular-nums backdrop-blur">
+              {course.sub}
+            </span>
+            <span className="flex items-center gap-1.5 rounded-md bg-obsidian/70 px-2 py-1 font-mono text-[9.5px] tracking-[0.12em] text-canvas uppercase backdrop-blur">
+              <span className={`h-1.5 w-1.5 rounded-full ${levelTone[course.level]}`} />
+              {course.level}
+            </span>
+          </span>
+
           <span className="absolute inset-0 grid place-items-center opacity-0 transition-opacity duration-300 group-hover:opacity-100">
             <span className="grid h-11 w-11 place-items-center rounded-full bg-canvas/95 text-ink shadow-lg backdrop-blur">
               <svg viewBox="0 0 12 14" className="ml-0.5 h-3.5 w-3.5" aria-hidden>
@@ -67,50 +85,61 @@ export default function CourseCard({
               </svg>
             </span>
           </span>
+
           <span className="absolute right-2.5 bottom-2.5 rounded-md bg-obsidian/80 px-2 py-1 font-mono text-[10px] tracking-wide text-canvas tabular-nums backdrop-blur">
             {fmtDuration(course.minutes)}
           </span>
         </Link>
 
         <div className="relative flex flex-1 flex-col p-6">
-          <span
-            aria-hidden
-            className="ghost-num pointer-events-none absolute top-4 right-5 text-[52px]"
-          >
-            {course.n}
-          </span>
+          {wide && (
+            <span
+              aria-hidden
+              className="ghost-num pointer-events-none absolute top-4 right-5 text-[52px]"
+            >
+              {course.n}
+            </span>
+          )}
 
           <div className="relative flex items-center gap-3">
-            <span className="label text-ink">{course.sub}</span>
-            <span className="flex items-center gap-1.5">
-              <span
-                className={`h-1.5 w-1.5 rounded-full ${levelTone[course.level]}`}
-              />
-              <span className="label">{course.level}</span>
-            </span>
-            <span className="label">{fmtViews(course.views)} views</span>
+            <span className="label text-ink">{course.channel}</span>
+            <span className="label ml-auto">{fmtViews(course.views)} views</span>
           </div>
 
-          <Link href={`/course/${course.slug}`} className="relative mt-3.5">
-            <h3 className="display-4 max-w-[26ch]">{course.shortTitle}</h3>
-            <p className="mt-2 font-mono text-[11px] leading-relaxed tracking-[0.02em] text-muted">
-              {course.channel}
-              <span className="mx-2 text-line-2">/</span>
-              <span className="normal-case">{course.title}</span>
+          <Link href={`/course/${course.slug}`} className="relative mt-3.5 block">
+            <h3
+              className={`display-4 ${
+                wide ? "max-w-[26ch]" : "line-clamp-2 min-h-[calc(2*1.18em)]"
+              }`}
+            >
+              {course.shortTitle}
+            </h3>
+            <p className="mt-2 truncate font-mono text-[11px] leading-relaxed tracking-[0.02em] text-muted">
+              {course.title}
             </p>
           </Link>
 
-          <p className="mt-4 line-clamp-3 text-[14.5px] leading-[1.58] text-ink-2">
+          <p
+            className={`mt-4 line-clamp-3 text-[14.5px] leading-[1.58] text-ink-2 ${
+              wide ? "" : "min-h-[calc(3*1.58em)]"
+            }`}
+          >
             {course.summary}
           </p>
 
-          <div className="mt-5 flex flex-wrap gap-1.5">
+          {/* one line, never wraps; anything past the edge fades out */}
+          <div
+            className={`mt-5 flex gap-1.5 ${
+              wide
+                ? "flex-wrap"
+                : "flex-nowrap overflow-hidden"
+            }`}
+          >
             {course.topics.map((t) => (
-              <span key={t} className="chip">
+              <span key={t} className="chip shrink-0">
                 {t}
               </span>
             ))}
-            <span className="chip chip-free">Free</span>
           </div>
 
           <div className="mt-auto flex items-center gap-2 pt-6">

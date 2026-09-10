@@ -2,10 +2,11 @@
 
 import { AnimatePresence, motion } from "motion/react";
 import { useMemo, useState } from "react";
-import { allTopics, courses, fmtDuration, type Course } from "@/lib/courses";
+import { courses, fmtDuration, type Course } from "@/lib/courses";
 import { CONTINUITY_SPRING } from "@/lib/motion";
 import AccentText from "./AccentText";
 import CourseCard from "./CourseCard";
+import TopicMenu from "./TopicMenu";
 
 type Sort = "path" | "shortest" | "popular";
 const levels = ["Beginner", "Intermediate", "Advanced"] as const;
@@ -68,48 +69,49 @@ export default function Catalog() {
           </div>
         </div>
 
-        <div className="mt-8 flex flex-wrap items-center gap-2 border-y border-line py-4">
-          <button
-            onClick={() => {
-              setTopic(null);
-              setLevel(null);
-            }}
-            className={`rounded-full border px-3.5 py-1.5 text-[12.5px] transition-colors ${
-              !topic && !level
-                ? "border-ink bg-ink text-canvas"
-                : "border-line bg-paper text-ink-2 hover:border-ink"
-            }`}
-          >
-            Everything
-          </button>
-          {levels.map((l) => (
-            <button
-              key={l}
-              onClick={() => setLevel(level === l ? null : l)}
-              className={`rounded-full border px-3.5 py-1.5 text-[12.5px] transition-colors ${
-                level === l
-                  ? "border-ink bg-ink text-canvas"
-                  : "border-line bg-paper text-ink-2 hover:border-ink"
-              }`}
-            >
-              {l}
-            </button>
-          ))}
-          <span className="mx-1 h-4 w-px bg-line" />
-          {allTopics.map((t) => (
-            <button
-              key={t}
-              onClick={() => setTopic(topic === t ? null : t)}
-              className={`rounded-full border px-3.5 py-1.5 font-mono text-[10.5px] tracking-[0.02em] transition-colors ${
-                topic === t
-                  ? "border-flame bg-flame/10 text-flame"
-                  : "border-line bg-paper text-muted hover:border-ink hover:text-ink"
-              }`}
-            >
-              {t}
-            </button>
-          ))}
-          <span className="label ml-auto">
+        {/* Filters: a segmented control for level and one menu for topic.
+            No rules above or below; the sort control already sets the idiom. */}
+        <div className="mt-10 flex flex-wrap items-center gap-x-5 gap-y-3">
+          <div className="flex items-center gap-0.5 rounded-full border border-line bg-paper p-1 shadow-[var(--shadow-card)]">
+            {(
+              [
+                [null, "Everything"],
+                ...levels.map((l) => [l, l] as const),
+              ] as [Course["level"] | null, string][]
+            ).map(([k, l]) => {
+              const active = k === null ? !level && !topic : level === k;
+              return (
+                <button
+                  key={l}
+                  onClick={() => {
+                    if (k === null) {
+                      setTopic(null);
+                      setLevel(null);
+                    } else {
+                      setLevel(level === k ? null : k);
+                    }
+                  }}
+                  aria-pressed={active}
+                  className={`relative rounded-full px-3.5 py-1.5 text-[12.5px] transition-colors ${
+                    active ? "text-canvas" : "text-ink-2 hover:text-ink"
+                  }`}
+                >
+                  {active && (
+                    <motion.span
+                      layoutId="catalog-level-pill"
+                      transition={CONTINUITY_SPRING}
+                      className="absolute inset-0 rounded-full bg-ink"
+                    />
+                  )}
+                  <span className="relative z-10">{l}</span>
+                </button>
+              );
+            })}
+          </div>
+
+          <TopicMenu value={topic} onChange={setTopic} />
+
+          <span className="label ml-auto whitespace-nowrap">
             {list.length} shown · {fmtDuration(mins)}
           </span>
         </div>
@@ -119,7 +121,7 @@ export default function Catalog() {
             No course matches that pair of filters. Clear one to see more.
           </p>
         ) : (
-          <div className="mt-9 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="mt-9 grid items-stretch gap-5 sm:grid-cols-2 lg:grid-cols-3">
             <AnimatePresence mode="popLayout" initial={false}>
               {list.map((c) => (
                 <motion.div
@@ -129,6 +131,7 @@ export default function Catalog() {
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0, scale: 0.97 }}
                   transition={CONTINUITY_SPRING}
+                  className="h-full"
                 >
                   <CourseCard course={c} variant="grid" />
                 </motion.div>

@@ -4,7 +4,7 @@ import Logo from "./Logo";
 
 export default function Footer() {
   return (
-    <footer className="bg-obsidian px-6 pt-20 pb-10 text-canvas">
+    <footer className="border-t border-line-dark bg-obsidian px-6 pt-20 pb-10 text-canvas">
       <div className="mx-auto max-w-[1200px]">
         <div className="grid gap-x-12 gap-y-12 border-b border-line-dark pb-14 md:grid-cols-12">
           <div className="md:col-span-5">
@@ -15,10 +15,6 @@ export default function Footer() {
               total. Not affiliated with any of the creators listed, and nothing
               here is sold.
             </p>
-            <span className="mt-7 inline-flex items-center gap-2 rounded-full border border-moss/40 bg-moss/12 px-3 py-1.5 font-mono text-[9.5px] tracking-[0.15em] text-moss uppercase">
-              <span className="h-1.5 w-1.5 rounded-full bg-moss" />
-              Always free
-            </span>
           </div>
 
           <div className="md:col-span-3 md:col-start-7">
@@ -57,6 +53,14 @@ export default function Footer() {
                   </Link>
                 </li>
               ))}
+              <li>
+                <Link
+                  href="/notes"
+                  className="text-[14.5px] text-white/70 transition-colors hover:text-canvas"
+                >
+                  Notes
+                </Link>
+              </li>
               <li>
                 <Link
                   href="/community"
