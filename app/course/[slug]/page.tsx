@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import Footer from "@/components/Footer";
 import Nav from "@/components/Nav";
 import MarkDone from "@/components/MarkDone";
+import PathPosition from "@/components/PathPosition";
 import {
   courses,
   fmtDuration,
@@ -107,6 +108,7 @@ export default async function CoursePage({ params }: Params) {
                   </span>
                 ))}
               </div>
+              <PathPosition slug={course.slug} />
             </div>
           </div>
 

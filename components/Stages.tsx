@@ -1,6 +1,7 @@
 import { courses, fmtDuration, stages } from "@/lib/courses";
 import AccentText from "./AccentText";
 import CourseCard from "./CourseCard";
+import StageWeight from "./StageWeight";
 import ProgressBar from "./ProgressBar";
 import Reveal from "./Reveal";
 
@@ -20,6 +21,7 @@ export default function Stages() {
               the one before it, and each course earns its place by teaching
               something the others do not.
             </p>
+            <StageWeight />
           </Reveal>
           <Reveal delay={80} className="md:col-span-5 md:col-start-8 md:pt-1">
             <ProgressBar />

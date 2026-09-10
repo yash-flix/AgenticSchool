@@ -9,6 +9,7 @@ import {
   watchUrl,
 } from "@/lib/courses";
 import AccentText from "./AccentText";
+import FieldShape from "./FieldShape";
 import Reveal from "./Reveal";
 
 export default function FieldTrack() {
@@ -29,6 +30,7 @@ export default function FieldTrack() {
             <h2 className="display-2 mt-5 max-w-[15ch]">
               <AccentText>{"Watch *working engineers* do it"}</AccentText>
             </h2>
+            <FieldShape />
           </Reveal>
           <Reveal delay={80} className="md:col-span-5 md:col-start-8">
             <p className="lede">

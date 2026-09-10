@@ -1,7 +1,9 @@
 "use client";
 
+import { AnimatePresence, motion } from "motion/react";
 import { useMemo, useState } from "react";
 import { allTopics, courses, fmtDuration, type Course } from "@/lib/courses";
+import { CONTINUITY_SPRING } from "@/lib/motion";
 import AccentText from "./AccentText";
 import CourseCard from "./CourseCard";
 
@@ -46,11 +48,21 @@ export default function Catalog() {
               <button
                 key={k}
                 onClick={() => setSort(k)}
-                className={`rounded-full px-3.5 py-2 font-mono text-[9.5px] tracking-[0.14em] uppercase transition-colors ${
-                  sort === k ? "bg-ink text-canvas" : "text-muted hover:text-ink"
+                aria-pressed={sort === k}
+                className={`relative rounded-full px-3.5 py-2 font-mono text-[9.5px] tracking-[0.14em] uppercase transition-colors ${
+                  sort === k ? "text-canvas" : "text-muted hover:text-ink"
                 }`}
               >
-                {l}
+                {/* A single shared element: motion tweens it between buttons
+                    because the layoutId matches across renders. */}
+                {sort === k && (
+                  <motion.span
+                    layoutId="catalog-sort-pill"
+                    transition={CONTINUITY_SPRING}
+                    className="absolute inset-0 rounded-full bg-ink"
+                  />
+                )}
+                <span className="relative z-10">{l}</span>
               </button>
             ))}
           </div>
@@ -108,9 +120,20 @@ export default function Catalog() {
           </p>
         ) : (
           <div className="mt-9 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            {list.map((c) => (
-              <CourseCard key={c.slug} course={c} variant="grid" />
-            ))}
+            <AnimatePresence mode="popLayout" initial={false}>
+              {list.map((c) => (
+                <motion.div
+                  key={c.slug}
+                  layout
+                  initial={{ opacity: 0, scale: 0.97 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.97 }}
+                  transition={CONTINUITY_SPRING}
+                >
+                  <CourseCard course={c} variant="grid" />
+                </motion.div>
+              ))}
+            </AnimatePresence>
           </div>
         )}
       </div>

@@ -1,6 +1,8 @@
 "use client";
 
+import { AnimatePresence, motion } from "motion/react";
 import { useState } from "react";
+import { CONTINUITY_LABEL, CONTINUITY_SPRING } from "@/lib/motion";
 import { useViewer } from "@/lib/useViewer";
 import AuthButton from "./AuthButton";
 import {
@@ -98,7 +100,10 @@ export default function CommunityWall({
         {needsAuth ? (
           <AuthButton />
         ) : (
-          <button
+          <motion.button
+            layout
+            transition={CONTINUITY_SPRING}
+            whileTap={{ scale: 0.97 }}
             onClick={() => {
               setOpen((v) => !v);
               if (viewer && !form.author) {
@@ -108,8 +113,21 @@ export default function CommunityWall({
             className="btn btn-solid"
             aria-expanded={open}
           >
-            {open ? "Close form" : "Submit a project"}
-          </button>
+            <AnimatePresence mode="popLayout" initial={false}>
+              <motion.span
+                key={open ? "close" : "submit"}
+                layout
+                variants={CONTINUITY_LABEL}
+                initial="hidden"
+                animate="visible"
+                exit="exit"
+                transition={CONTINUITY_SPRING}
+                className="whitespace-nowrap"
+              >
+                {open ? "Close form" : "Submit a project"}
+              </motion.span>
+            </AnimatePresence>
+          </motion.button>
         )}
       </div>
 
@@ -138,12 +156,19 @@ export default function CommunityWall({
         </p>
       )}
 
-      {open && (
-        <form
-          onSubmit={submit}
-          className="card mt-8 p-7 hover:translate-y-0 hover:shadow-[var(--shadow-card)]"
-          noValidate
-        >
+      <AnimatePresence initial={false}>
+        {open && (
+          <motion.form
+            key="submit-form"
+            layout
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={CONTINUITY_SPRING}
+            onSubmit={submit}
+            className="card mt-8 overflow-hidden p-7 hover:translate-y-0 hover:shadow-[var(--shadow-card)]"
+            noValidate
+          >
           <div className="grid gap-6 sm:grid-cols-2">
             <Field
               label="Project name"
@@ -238,8 +263,9 @@ export default function CommunityWall({
               Goes live immediately. Anyone can report it if it does not belong.
             </span>
           </div>
-        </form>
-      )}
+          </motion.form>
+        )}
+      </AnimatePresence>
 
       <div className="mt-12">
         {projects.length === 0 ? (
@@ -256,8 +282,17 @@ export default function CommunityWall({
           </div>
         ) : (
           <ul className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            <AnimatePresence mode="popLayout" initial={false}>
             {projects.map((p) => (
-              <li key={p.id} className="card flex flex-col p-6">
+              <motion.li
+                key={p.id}
+                layout
+                initial={{ opacity: 0, y: 12, scale: 0.97 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.97 }}
+                transition={CONTINUITY_SPRING}
+                className="card flex flex-col p-6"
+              >
                 <div className="flex items-center gap-3">
                   <span className="label text-ink">{p.stage}</span>
                 </div>
@@ -302,8 +337,9 @@ export default function CommunityWall({
                     {reported.includes(p.id) ? "Reported" : "Report"}
                   </button>
                 </div>
-              </li>
+              </motion.li>
             ))}
+            </AnimatePresence>
           </ul>
         )}
       </div>

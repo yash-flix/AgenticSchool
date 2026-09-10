@@ -1,6 +1,8 @@
 "use client";
 
+import { AnimatePresence, motion } from "motion/react";
 import { courses, fmtDuration } from "@/lib/courses";
+import { CONTINUITY_LABEL, CONTINUITY_SPRING } from "@/lib/motion";
 import { useProgress } from "@/lib/useProgress";
 
 export default function ProgressBar() {
@@ -20,14 +22,25 @@ export default function ProgressBar() {
             <span className="text-line-2">/{courses.length}</span>
           </p>
         </div>
-        {ready && done.length > 0 && (
-          <button
-            onClick={reset}
-            className="label transition-colors hover:text-flame"
-          >
-            Reset
-          </button>
-        )}
+        {/* Reset only exists once there is something to reset, so it earns an
+            entrance rather than appearing between two renders. */}
+        <AnimatePresence initial={false}>
+          {ready && done.length > 0 && (
+            <motion.button
+              layout
+              onClick={reset}
+              variants={CONTINUITY_LABEL}
+              initial="hidden"
+              animate="visible"
+              exit="exit"
+              transition={CONTINUITY_SPRING}
+              whileTap={{ scale: 0.95 }}
+              className="label transition-colors hover:text-flame"
+            >
+              Reset
+            </motion.button>
+          )}
+        </AnimatePresence>
       </div>
 
       <div className="mt-6 flex gap-1">

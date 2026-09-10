@@ -1,10 +1,13 @@
 "use client";
 
+import { AnimatePresence, motion } from "motion/react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { courses } from "@/lib/courses";
+import { CONTINUITY_SPRING } from "@/lib/motion";
 import { useProgress } from "@/lib/useProgress";
 import AuthButton from "./AuthButton";
+import FreeBadge from "./FreeBadge";
 import Logo from "./Logo";
 
 const links = [
@@ -14,6 +17,9 @@ const links = [
   { href: "/community", label: "Community" },
   { href: "/#faq", label: "Notes" },
 ];
+
+/** Circumference of the r=7 progress ring, so the dash maths stays readable. */
+const RING = 2 * Math.PI * 7;
 
 export default function Nav() {
   const [scrolled, setScrolled] = useState(false);
@@ -35,13 +41,15 @@ export default function Nav() {
           : "border-b border-transparent"
       }`}
     >
-      <div className="mx-auto flex h-[68px] max-w-[1200px] items-center gap-6 px-6">
-        <Link href="/" aria-label="Agent School home">
-          <Logo />
-        </Link>
-        <span className="chip chip-free hidden sm:inline-flex">Free</span>
+      <div className="mx-auto grid h-[68px] max-w-[1200px] grid-cols-[1fr_auto_1fr] items-center gap-6 px-6">
+        <div className="flex items-center gap-3">
+          <Link href="/" aria-label="Agent School home">
+            <Logo />
+          </Link>
+          <FreeBadge className="hidden sm:inline-flex" />
+        </div>
 
-        <nav className="ml-auto hidden items-center gap-0.5 md:flex">
+        <nav className="hidden items-center gap-0.5 md:flex">
           {links.map((l) => (
             <a
               key={l.href}
@@ -53,26 +61,84 @@ export default function Nav() {
           ))}
         </nav>
 
-        <div className="ml-auto flex items-center gap-3 md:ml-4">
-          <span className="label hidden lg:block">
-            {ready ? `${done.length}/${courses.length}` : ""}
+        <div className="flex items-center justify-end gap-3">
+          {/* A ring reads as progress at a glance; the bare fraction did not. */}
+          <span
+            className="hidden items-center gap-2 lg:flex"
+            title={`${done.length} of ${courses.length} courses marked done`}
+          >
+            <svg viewBox="0 0 18 18" className="h-[18px] w-[18px] -rotate-90">
+              <circle
+                cx="9"
+                cy="9"
+                r="7"
+                fill="none"
+                strokeWidth="2"
+                className="stroke-line-2"
+              />
+              <motion.circle
+                cx="9"
+                cy="9"
+                r="7"
+                fill="none"
+                strokeWidth="2"
+                strokeLinecap="round"
+                className="stroke-flame"
+                strokeDasharray={RING}
+                initial={false}
+                animate={{
+                  strokeDashoffset:
+                    RING * (1 - (ready ? done.length / courses.length : 0)),
+                }}
+                transition={CONTINUITY_SPRING}
+              />
+            </svg>
+            <span className="label tabular-nums">
+              {ready ? `${done.length}/${courses.length}` : ""}
+            </span>
           </span>
           <AuthButton />
           <a href="#path" className="btn btn-solid btn-sm">
             Start the path
           </a>
-          <button
+          <motion.button
             onClick={() => setOpen((v) => !v)}
             aria-label="Menu"
+            aria-expanded={open}
+            whileTap={{ scale: 0.9 }}
             className="grid h-9 w-9 place-items-center rounded-full border border-line-2 md:hidden"
           >
-            <span className="font-mono text-xs">{open ? "×" : "≡"}</span>
-          </button>
+            {/* The two glyphs occupy the same cell, so one rotates out as the
+                other rotates in instead of the button twitching. */}
+            <span className="grid grid-cols-1 grid-rows-1 place-items-center">
+              <AnimatePresence mode="popLayout" initial={false}>
+                <motion.span
+                  key={open ? "close" : "open"}
+                  initial={{ opacity: 0, rotate: -90, scale: 0.6 }}
+                  animate={{ opacity: 1, rotate: 0, scale: 1 }}
+                  exit={{ opacity: 0, rotate: 90, scale: 0.6 }}
+                  transition={CONTINUITY_SPRING}
+                  className="col-start-1 row-start-1 font-mono text-xs"
+                >
+                  {open ? "\u00d7" : "\u2261"}
+                </motion.span>
+              </AnimatePresence>
+            </span>
+          </motion.button>
         </div>
       </div>
 
-      {open && (
-        <div className="border-t border-line bg-canvas px-6 py-2 md:hidden">
+      <AnimatePresence initial={false}>
+        {open && (
+          <motion.div
+            key="mobile-menu"
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={CONTINUITY_SPRING}
+            className="overflow-hidden border-t border-line bg-canvas px-6 md:hidden"
+          >
+            <div className="py-2">
           {links.map((l) => (
             <a
               key={l.href}
@@ -83,8 +149,10 @@ export default function Nav() {
               {l.label}
             </a>
           ))}
-        </div>
-      )}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </header>
   );
 }

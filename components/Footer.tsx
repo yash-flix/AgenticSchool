@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { courses, libraryCount, libraryMinutes } from "@/lib/courses";
-import { LogoMark } from "./Logo";
+import Logo from "./Logo";
 
 export default function Footer() {
   return (
@@ -8,15 +8,7 @@ export default function Footer() {
       <div className="mx-auto max-w-[1200px]">
         <div className="grid gap-x-12 gap-y-12 border-b border-line-dark pb-14 md:grid-cols-12">
           <div className="md:col-span-5">
-            <span className="flex items-center gap-3">
-              <span className="grid h-9 w-9 place-items-center rounded-[10px] bg-canvas text-obsidian">
-                <LogoMark className="h-5 w-5" />
-              </span>
-              <span className="text-[20px] leading-none tracking-[-0.03em]">
-                <span className="font-medium">Agent</span>
-                <span className="em-serif ml-1 text-[22px]">School</span>
-              </span>
-            </span>
+            <Logo surface="dark" size="lg" />
             <p className="mt-6 max-w-[38ch] text-[14.5px] leading-[1.65] text-white/58">
               A free, unpaywalled reading order for {libraryCount} YouTube
               videos on agentic AI, {Math.round(libraryMinutes / 60)} hours in

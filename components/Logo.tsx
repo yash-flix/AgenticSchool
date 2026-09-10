@@ -29,27 +29,43 @@ export function LogoMark({ className = "" }: { className?: string }) {
   );
 }
 
+const SIZES = {
+  sm: { badge: "h-8 w-8 rounded-[10px]", mark: "h-[18px] w-[18px]", word: "text-[17px]", serif: "text-[19px] ml-[3px]", gap: "gap-2.5" },
+  lg: { badge: "h-9 w-9 rounded-[11px]", mark: "h-5 w-5", word: "text-[20px]", serif: "text-[22px] ml-1", gap: "gap-3" },
+} as const;
+
+/**
+ * `surface` says what the logo is sitting on, not what colour it is. The badge
+ * is a dark tile with a light mark in both cases — inverting it on dark
+ * backgrounds made the same brand read as two different marks. On obsidian the
+ * tile lifts one step off the background and takes a hairline ring so it still
+ * separates.
+ */
 export default function Logo({
   className = "",
-  tone = "ink",
+  surface = "light",
+  size = "sm",
 }: {
   className?: string;
-  tone?: "ink" | "canvas";
+  surface?: "light" | "dark";
+  size?: "sm" | "lg";
 }) {
+  const s = SIZES[size];
+
   return (
-    <span className={`flex items-center gap-2.5 ${className}`}>
+    <span className={`flex items-center ${s.gap} ${className}`}>
       <span
-        className={`grid h-8 w-8 place-items-center rounded-[10px] ${
-          tone === "ink"
-            ? "bg-ink text-canvas shadow-[0_1px_0_rgba(255,255,255,0.16)_inset,0_4px_12px_-6px_rgba(21,21,26,0.7)]"
-            : "bg-canvas text-ink"
+        className={`grid shrink-0 place-items-center text-canvas ${s.badge} ${
+          surface === "light"
+            ? "bg-ink shadow-[0_1px_0_rgba(255,255,255,0.16)_inset,0_4px_12px_-6px_rgba(21,21,26,0.7)]"
+            : "bg-obsidian-2 ring-1 ring-white/14"
         }`}
       >
-        <LogoMark className="h-[18px] w-[18px]" />
+        <LogoMark className={s.mark} />
       </span>
-      <span className="text-[17px] leading-none tracking-[-0.03em]">
+      <span className={`${s.word} leading-none tracking-[-0.03em]`}>
         <span className="font-medium">Agent</span>
-        <span className="em-serif ml-[3px] text-[19px]">School</span>
+        <span className={`em-serif ${s.serif}`}>School</span>
       </span>
     </span>
   );

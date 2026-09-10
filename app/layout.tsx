@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Caveat, Geist, Geist_Mono, Instrument_Serif } from "next/font/google";
+import MotionProvider from "@/components/MotionProvider";
 import ProgressSync from "@/components/ProgressSync";
 import "./globals.css";
 
@@ -52,7 +53,7 @@ export default function RootLayout({
     >
       <body className="grain antialiased">
         <ProgressSync />
-        {children}
+        <MotionProvider>{children}</MotionProvider>
       </body>
     </html>
   );
