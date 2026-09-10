@@ -47,7 +47,7 @@ export default function LoginForm() {
       transition={CONTINUITY_SPRING}
       className="card w-full max-w-[380px] p-8 hover:translate-y-0"
     >
-      <Logo />
+      <Logo href="/" />
       <h1 className="display-4 mt-8">Admin</h1>
       <p className="mt-2 text-[13.5px] text-muted">
         Sign in with the account that holds the admin role.

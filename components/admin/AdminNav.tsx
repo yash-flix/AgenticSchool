@@ -22,9 +22,7 @@ export default function AdminNav({
   return (
     <aside className="shrink-0 border-line bg-canvas md:sticky md:top-0 md:h-dvh md:w-[236px] md:border-r">
       <div className="flex items-center gap-3 border-b border-line px-5 py-[18px] md:border-b-0 md:px-6 md:py-6">
-        <Link href="/" aria-label="Agent School home">
-          <Logo />
-        </Link>
+        <Logo href="/" />
         <span className="font-mono text-[9.5px] tracking-[0.15em] text-muted uppercase">
           Admin
         </span>

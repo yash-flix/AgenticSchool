@@ -8,7 +8,7 @@ export default function Footer() {
       <div className="mx-auto max-w-[1200px]">
         <div className="grid gap-x-12 gap-y-12 border-b border-line-dark pb-14 md:grid-cols-12">
           <div className="md:col-span-5">
-            <Logo surface="dark" size="lg" />
+            <Logo surface="dark" size="lg" href="/" />
             <p className="mt-6 max-w-[38ch] text-[14.5px] leading-[1.65] text-white/58">
               A free, unpaywalled reading order for {libraryCount} YouTube
               videos on agentic AI, {Math.round(libraryMinutes / 60)} hours in

@@ -51,6 +51,13 @@ export default function RootLayout({
       lang="en"
       className={`${geist.variable} ${geistMono.variable} ${instrumentSerif.variable} ${caveat.variable}`}
     >
+      <head>
+        {/* Every section starts at opacity 0 and is revealed by JavaScript.
+            Without this the whole site renders blank when scripts fail. */}
+        <noscript>
+          <style>{`.reveal{opacity:1 !important}`}</style>
+        </noscript>
+      </head>
       <body className="grain antialiased">
         <ProgressSync />
         <MotionProvider>{children}</MotionProvider>

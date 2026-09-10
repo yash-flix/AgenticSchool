@@ -1,7 +1,6 @@
 "use client";
 
 import { AnimatePresence, motion } from "motion/react";
-import Link from "next/link";
 import { useEffect, useState } from "react";
 import { courses } from "@/lib/courses";
 import { CONTINUITY_SPRING } from "@/lib/motion";
@@ -44,9 +43,7 @@ export default function Nav() {
     >
       <div className="mx-auto grid h-[68px] max-w-[1200px] grid-cols-[1fr_auto_1fr] items-center gap-6 px-6">
         <div className="flex items-center gap-3">
-          <Link href="/" aria-label="Agent School home">
-            <Logo />
-          </Link>
+          <Logo href="/" />
           <FreeBadge className="hidden sm:inline-flex" />
         </div>
 

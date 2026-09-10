@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 /**
  * Mark: one root node fanning out to two children — the smallest possible
  * drawing of an agent graph, which is what the whole path teaches.
@@ -45,15 +47,18 @@ export default function Logo({
   className = "",
   surface = "light",
   size = "sm",
+  href,
 }: {
   className?: string;
   surface?: "light" | "dark";
   size?: "sm" | "lg";
+  /** Pass a route to make the whole lockup a link. */
+  href?: React.ComponentProps<typeof Link>["href"];
 }) {
   const s = SIZES[size];
 
-  return (
-    <span className={`flex items-center ${s.gap} ${className}`}>
+  const lockup = (
+    <>
       <span
         className={`grid shrink-0 place-items-center text-canvas ${s.badge} ${
           surface === "light"
@@ -67,6 +72,24 @@ export default function Logo({
         <span className="font-medium">Agent</span>
         <span className={`em-serif ${s.serif}`}>School</span>
       </span>
-    </span>
+    </>
   );
+
+  const shell = `flex items-center ${s.gap} ${className}`;
+
+  // Two explicit returns rather than a dynamic tag: a `Link | "span"` union
+  // cannot be given props that typecheck for both.
+  if (href) {
+    return (
+      <Link
+        href={href}
+        aria-label="Agent School home"
+        className={`${shell} transition-opacity hover:opacity-80`}
+      >
+        {lockup}
+      </Link>
+    );
+  }
+
+  return <span className={shell}>{lockup}</span>;
 }

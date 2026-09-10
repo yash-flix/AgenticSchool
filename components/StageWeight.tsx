@@ -1,4 +1,5 @@
 import { courses, fmtDuration, stages } from "@/lib/courses";
+import { STAGE_RAMP } from "@/lib/palette";
 
 /**
  * Part-to-whole across four ordered stages. The ramp runs light to dark in path
@@ -8,12 +9,10 @@ import { courses, fmtDuration, stages } from "@/lib/courses";
  * Ordinal, not categorical: four accent hues would have said these stages are
  * different in kind rather than consecutive.
  */
-const RAMP = ["bg-line-2", "bg-muted", "bg-ink-2", "bg-ink"];
-
 export default function StageWeight() {
   const rows = stages.map((s, i) => ({
     ...s,
-    tone: RAMP[i],
+    tone: STAGE_RAMP[i],
     minutes: courses
       .filter((c) => c.stage === s.id)
       .reduce((a, c) => a + c.minutes, 0),
